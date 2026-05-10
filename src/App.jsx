@@ -135,7 +135,7 @@ const getAge = (b) => {
 if (!b) return “”;
 const diff = (new Date() - new Date(b)) / (1000 * 60 * 60 * 24 * 30.5);
 if (diff < 12) return `${Math.floor(diff)}ヶ月`;
-return `${Math.floor(diff / 12)}歳${Math.floor(diff % 12) > 0 ? Math.floor(diff % 12) + "ヶ月" : ""}`;
+return `${Math.floor(diff / 12)}歳${Math.floor(diff % 12) > 0 ? Math.floor(diff % 12) + ”ヶ月” : ””}`;
 };
 const nextHeatEst = (d) => { if (!d) return null; const dt = new Date(d); dt.setDate(dt.getDate() + 180); return dt.toISOString().slice(0, 10); };
 const daysDiff = (a, b = todayStr()) => !a ? null : Math.round((new Date(b) - new Date(a)) / 86400000);
@@ -367,19 +367,19 @@ body{font-family:‘Noto Sans JP’,sans-serif;background:var(–bg);color:var(�
 // ============================================================
 function Hdr({ title, sub, onBack }) {
 return (
-<div className="hdr">
-{onBack && <button className="hdr-back" onClick={onBack}><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>}
-<div><div className="hdr-title">{title}</div>{sub && <div className="hdr-sub">{sub}</div>}</div>
+<div className=”hdr”>
+{onBack && <button className=”hdr-back” onClick={onBack}><svg width=”19” height=”19” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” strokeWidth=”2.5” strokeLinecap=”round” strokeLinejoin=”round”><polyline points=”15 18 9 12 15 6”/></svg></button>}
+<div><div className=”hdr-title”>{title}</div>{sub && <div className=”hdr-sub”>{sub}</div>}</div>
 </div>
 );
 }
 function Modal({ title, onClose, children }) {
 return (
 <div className=“overlay” onClick={e => e.target.className === “overlay” && onClose()}>
-<div className="modal">
-<div className="modal-title">{title}</div>
+<div className=”modal”>
+<div className=”modal-title”>{title}</div>
 {children}
-<button className="btn-cancel" onClick={onClose}>キャンセル</button>
+<button className=”btn-cancel” onClick={onClose}>キャンセル</button>
 </div>
 </div>
 );
@@ -393,16 +393,16 @@ const fa = findDog(dog.fatherId), mo = findDog(dog.motherId);
 const ff = fa ? findDog(fa.fatherId) : null, fm = fa ? findDog(fa.motherId) : null;
 const mf = mo ? findDog(mo.fatherId) : null, mm = mo ? findDog(mo.motherId) : null;
 const Box = ({ d, role }) => {
-if (!d) return <div className="tree-box ext"><div className=“t-name” style={{color:“var(–text3)”}}>不明</div><div className="t-role">{role}</div></div>;
+if (!d) return <div className=”tree-box ext”><div className=“t-name” style={{color:“var(–text3)”}}>不明</div><div className=”t-role”>{role}</div></div>;
 const mine = !d.external;
-return <div className={`tree-box ${mine?"mine":"ext"} ${d.gender==="オス"?"m":"f"}`} onClick={() => mine && onSelect(d)}>
-<div className="t-name">{d.callName}</div><div className="t-role">{role}{d.external?” (外)”:””}</div>
+return <div className={`tree-box ${mine?”mine”:”ext”} ${d.gender===”オス”?”m”:”f”}`} onClick={() => mine && onSelect(d)}>
+<div className=”t-name”>{d.callName}</div><div className=”t-role”>{role}{d.external?” (外)”:””}</div>
 </div>;
 };
 const line = <div style={{width:20,height:1,background:“var(–border2)”}}/>;
 const vblock = (top, bot) => <div style={{display:“flex”,flexDirection:“column”,gap:8}}><Box d={top} role={top===ff?“父方祖父”:top===fm?“父方祖母”:top===mf?“母方祖父”:“母方祖母”}/><Box d={bot} role={bot===ff?“父方祖父”:bot===fm?“父方祖母”:bot===mf?“母方祖父”:“母方祖母”}/></div>;
 return (
-<div className="tree-wrap">
+<div className=”tree-wrap”>
 <div style={{display:“flex”,alignItems:“center”,gap:0,minWidth:“max-content”}}>
 <div style={{display:“flex”,flexDirection:“column”,gap:32}}>
 {vblock(ff,fm)}
@@ -413,12 +413,12 @@ return (
 <div style={{display:“flex”,alignItems:“center”,height:66}}>{line}</div>
 </div>
 <div style={{display:“flex”,flexDirection:“column”,gap:32}}>
-<Box d={fa} role="父"/><Box d={mo} role="母"/>
+<Box d={fa} role=”父”/><Box d={mo} role=”母”/>
 </div>
 {line}
-<div className="tree-box mine" style={{borderWidth:2,minWidth:90}}>
-<div className="t-name" style={{fontSize:13}}>{dog.callName}</div>
-<div className="t-role">本犬</div>
+<div className=”tree-box mine” style={{borderWidth:2,minWidth:90}}>
+<div className=”t-name” style={{fontSize:13}}>{dog.callName}</div>
+<div className=”t-role”>本犬</div>
 </div>
 </div>
 </div>
@@ -440,52 +440,52 @@ const hasHeatRecord = heatRecords.some(r => r.dogId === dog.id);
 
 return (
 <div style={{flex:1,paddingBottom:80}}>
-<div className="detail-hero">
+<div className=”detail-hero”>
 <div style={{fontSize:32,marginBottom:6}}>{emoji}</div>
-<div className="detail-name">{dog.callName}</div>
-<div className="detail-ped">{dog.pedigreeName}</div>
-<div className="detail-badges">
-<span className={`badge ${dog.gender==="メス"?"female":"male"}`}>{dog.gender}</span>
+<div className=”detail-name”>{dog.callName}</div>
+<div className=”detail-ped”>{dog.pedigreeName}</div>
+<div className=”detail-badges”>
+<span className={`badge ${dog.gender===”メス”?”female”:”male”}`}>{dog.gender}</span>
 <span className=“badge age” style={{background:isHusky?“var(–blue-dim)”:“var(–corgi-dim)”,color:isHusky?“var(–blue)”:“var(–corgi)”}}>{dog.breed}</span>
-{dog.birthdate && <span className="badge age">{getAge(dog.birthdate)}</span>}
+{dog.birthdate && <span className=”badge age”>{getAge(dog.birthdate)}</span>}
 </div>
 {/* 紐付けボタン */}
 {dog.gender === “メス” && (
-<div className="link-row">
+<div className=”link-row”>
 <button className=“link-btn pink” onClick={() => onGoHeat(dog)}>🌸 ヒート・交配記録を見る</button>
 </div>
 )}
 </div>
 
 ```
-  <div className="info-card">
-    <div className="info-card-title">基本情報</div>
-    <div className="info-grid">
-      <div className="info-item"><label>生年月日</label><span>{formatDate(dog.birthdate)}</span></div>
-      <div className="info-item"><label>毛色</label><span style={{fontSize:11}}>{dog.color}</span></div>
-      <div className="info-item full"><label>JKC登録番号</label><span style={{fontFamily:"DM Mono,monospace",fontSize:12}}>{dog.jkc||"－"}</span></div>
-      <div className="info-item full"><label>マイクロチップ</label><span style={{fontFamily:"DM Mono,monospace",fontSize:11}}>{dog.chip||"－"}</span></div>
-      {dog.note && <div className="info-item full"><label>備考</label><span>{dog.note}</span></div>}
+  <div className=”info-card”>
+    <div className=”info-card-title”>基本情報</div>
+    <div className=”info-grid”>
+      <div className=”info-item”><label>生年月日</label><span>{formatDate(dog.birthdate)}</span></div>
+      <div className=”info-item”><label>毛色</label><span style={{fontSize:11}}>{dog.color}</span></div>
+      <div className=”info-item full”><label>JKC登録番号</label><span style={{fontFamily:”DM Mono,monospace”,fontSize:12}}>{dog.jkc||”－”}</span></div>
+      <div className=”info-item full”><label>マイクロチップ</label><span style={{fontFamily:”DM Mono,monospace”,fontSize:11}}>{dog.chip||”－”}</span></div>
+      {dog.note && <div className=”info-item full”><label>備考</label><span>{dog.note}</span></div>}
     </div>
   </div>
 
-  <div className="tree-card">
-    <div className="tree-title">家系図（3世代）</div>
+  <div className=”tree-card”>
+    <div className=”tree-title”>家系図（3世代）</div>
     <FamilyTree dog={dog} onSelect={onSelectDog} />
-    <div style={{fontSize:9,color:"var(--text3)",marginTop:8}}>金枠=自犬舎 · 点線=外部 · タップで詳細へ</div>
+    <div style={{fontSize:9,color:”var(--text3)”,marginTop:8}}>金枠=自犬舎 · 点線=外部 · タップで詳細へ</div>
   </div>
 
   {children.length > 0 && (
-    <div className="info-card" style={{marginBottom:0}}>
-      <div className="info-card-title">子犬 ({children.length}頭)</div>
+    <div className=”info-card” style={{marginBottom:0}}>
+      <div className=”info-card-title”>子犬 ({children.length}頭)</div>
       {children.filter(c => !c.external).map(c => (
-        <div key={c.id} className="child-row" onClick={() => onSelectDog(c)}>
-          <span style={{fontSize:16}}>{c.breed?.includes("ハスキー")?"🐺":"🐕"}</span>
+        <div key={c.id} className=”child-row” onClick={() => onSelectDog(c)}>
+          <span style={{fontSize:16}}>{c.breed?.includes(”ハスキー”)?”🐺”:”🐕”}</span>
           <div style={{flex:1}}>
             <div style={{fontWeight:700,fontSize:14}}>{c.callName}</div>
-            <div style={{fontSize:11,color:"var(--text3)"}}>{c.breed} · {formatDate(c.birthdate)}</div>
+            <div style={{fontSize:11,color:”var(--text3)”}}>{c.breed} · {formatDate(c.birthdate)}</div>
           </div>
-          <span className={`badge ${c.gender==="メス"?"female":"male"}`}>{c.gender}</span>
+          <span className={`badge ${c.gender===”メス”?”female”:”male”}`}>{c.gender}</span>
         </div>
       ))}
     </div>
@@ -510,7 +510,7 @@ if (found && !found.external) setDetail(found);
 };
 
 if (detail) return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
 <Hdr title={detail.callName} sub={detail.breed} onBack={() => setDetail(null)} />
 <DogDetail dog={detail} dogs={dogs} heatRecords={heatRecords} onBack={() => setDetail(null)} onSelectDog={handleSelect} onGoHeat={(dog) => { setDetail(null); onGoHeat(dog); }} />
@@ -524,35 +524,35 @@ return mb && ms;
 });
 
 return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
-<Hdr title="🐾 犬リスト" sub="KENNEL LIST" onBack={onBack} />
-<div className="breed-tabs">
+<Hdr title=”🐾 犬リスト” sub=”KENNEL LIST” onBack={onBack} />
+<div className=”breed-tabs”>
 {[[“all”,“すべて”],[“husky”,“🐺 ハスキー”],[“corgi”,“🐕 コーギー”]].map(([k,l]) => (
-<button key={k} className={`breed-tab ${k} ${filter===k?"on":""}`} onClick={() => setFilter(k)}>{l}</button>
+<button key={k} className={`breed-tab ${k} ${filter===k?”on”:””}`} onClick={() => setFilter(k)}>{l}</button>
 ))}
 </div>
-<div className="search-wrap"><input className=“search-input” placeholder=“🔍 名前で検索…” value={search} onChange={e => setSearch(e.target.value)} /></div>
-<div className="dog-list">
+<div className=”search-wrap”><input className=“search-input” placeholder=“🔍 名前で検索…” value={search} onChange={e => setSearch(e.target.value)} /></div>
+<div className=”dog-list”>
 {filtered.map(d => {
 const isH = d.breed?.includes(“ハスキー”);
 return (
-<div key={d.id} className={`dog-card ${isH?"husky":"corgi"}`} onClick={() => setDetail(d)}>
-<div className={`dog-av ${isH?"husky":"corgi"}`}>{isH?“🐺”:“🐕”}</div>
-<div className="dog-info">
-<div className="dog-callname">{d.callName}</div>
-<div className="dog-ped">{d.pedigreeName}</div>
-<div className="dog-badges">
-<span className={`badge ${d.gender==="メス"?"female":"male"}`}>{d.gender}</span>
-<span className="badge age">{getAge(d.birthdate)}</span>
-<span className="badge color">{d.color}</span>
+<div key={d.id} className={`dog-card ${isH?”husky”:”corgi”}`} onClick={() => setDetail(d)}>
+<div className={`dog-av ${isH?”husky”:”corgi”}`}>{isH?“🐺”:“🐕”}</div>
+<div className=”dog-info”>
+<div className=”dog-callname”>{d.callName}</div>
+<div className=”dog-ped”>{d.pedigreeName}</div>
+<div className=”dog-badges”>
+<span className={`badge ${d.gender===”メス”?”female”:”male”}`}>{d.gender}</span>
+<span className=”badge age”>{getAge(d.birthdate)}</span>
+<span className=”badge color”>{d.color}</span>
 </div>
 </div>
 <span style={{color:“var(–text3)”,fontSize:18}}>›</span>
 </div>
 );
 })}
-{filtered.length === 0 && <div className="empty">該当する犬がいません</div>}
+{filtered.length === 0 && <div className=”empty”>該当する犬がいません</div>}
 </div>
 </div>
 );
@@ -566,18 +566,18 @@ const [f, setF] = useState({ …pup });
 const s = (k, v) => setF(p => ({ …p, [k]: v }));
 return (
 <Modal title={`#${pup.no} ${pup.gender} の詳細`} onClose={onClose}>
-<div className="field-row">
-<div className="field"><label>性別</label><select value={f.gender} onChange={e => s(“gender”, e.target.value)}><option>オス</option><option>メス</option></select></div>
-<div className="field"><label>識別</label><input value={f.identifier||””} onChange={e => s(“identifier”, e.target.value)} placeholder=“赤リボン など” /></div>
+<div className=”field-row”>
+<div className=”field”><label>性別</label><select value={f.gender} onChange={e => s(“gender”, e.target.value)}><option>オス</option><option>メス</option></select></div>
+<div className=”field”><label>識別</label><input value={f.identifier||””} onChange={e => s(“identifier”, e.target.value)} placeholder=“赤リボン など” /></div>
 </div>
-<div className="field"><label>毛色</label><input value={f.color||””} onChange={e => s(“color”, e.target.value)} placeholder=“例: BLACK & WHITE” /></div>
-<div className="field"><label>アイカラー（目が開いてから）</label><input value={f.eyeColor||””} onChange={e => s(“eyeColor”, e.target.value)} placeholder=“例: ブルー、ブラウン” /></div>
-<div className="field-row">
-<div className="field"><label>出生体重(g)</label><input type=“number” value={f.birthWeight||””} onChange={e => s(“birthWeight”, e.target.value)} /></div>
-<div className="field"><label>コールネーム</label><input value={f.name||””} onChange={e => s(“name”, e.target.value)} /></div>
+<div className=”field”><label>毛色</label><input value={f.color||””} onChange={e => s(“color”, e.target.value)} placeholder=“例: BLACK & WHITE” /></div>
+<div className=”field”><label>アイカラー（目が開いてから）</label><input value={f.eyeColor||””} onChange={e => s(“eyeColor”, e.target.value)} placeholder=“例: ブルー、ブラウン” /></div>
+<div className=”field-row”>
+<div className=”field”><label>出生体重(g)</label><input type=“number” value={f.birthWeight||””} onChange={e => s(“birthWeight”, e.target.value)} /></div>
+<div className=”field”><label>コールネーム</label><input value={f.name||””} onChange={e => s(“name”, e.target.value)} /></div>
 </div>
-<div className="field"><label>マイクロチップ番号</label><input value={f.chip||””} onChange={e => s(“chip”, e.target.value)} /></div>
-<div className="field"><label>備考</label><textarea value={f.note||””} onChange={e => s(“note”, e.target.value)} /></div>
+<div className=”field”><label>マイクロチップ番号</label><input value={f.chip||””} onChange={e => s(“chip”, e.target.value)} /></div>
+<div className=”field”><label>備考</label><textarea value={f.note||””} onChange={e => s(“note”, e.target.value)} /></div>
 <button className=“btn-save” onClick={() => { onSave(f); onClose(); }}>保存する</button>
 </Modal>
 );
@@ -611,35 +611,35 @@ const byYear = grouped.reduce((acc, r) => { const y = r.date.slice(0,4); if (!ac
 const years = Object.keys(byYear).sort((a,b) => b-a);
 
 return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
-<Hdr title="🌸 ヒート・交配管理" sub="HEAT & BREEDING" onBack={onBack} />
-<div className="dog-selector">
+<Hdr title=”🌸 ヒート・交配管理” sub=”HEAT & BREEDING” onBack={onBack} />
+<div className=”dog-selector”>
 {femaleDogs.map(d => (
-<button key={d.id} className={`dog-chip ${d.breed?.includes("ハスキー")?"husky":"corgi"} ${selDog?.id===d.id?"on":""}`} onClick={() => setSelDog(d)}>{d.callName}</button>
+<button key={d.id} className={`dog-chip ${d.breed?.includes(”ハスキー”)?”husky”:”corgi”} ${selDog?.id===d.id?”on”:””}`} onClick={() => setSelDog(d)}>{d.callName}</button>
 ))}
 </div>
 {selDog && <>
-<div className="dog-hdr">
+<div className=”dog-hdr”>
 <div style={{display:“flex”,justifyContent:“space-between”,alignItems:“flex-start”}}>
 <div>
-<div className="dog-hdr-name">{selDog.callName}</div>
+<div className=”dog-hdr-name”>{selDog.callName}</div>
 <div style={{fontSize:11,color:“var(–text3)”,marginTop:2}}>{selDog.breed}</div>
 </div>
-<div className="dog-hdr-stats">
-<div><div className=“dhs-num” style={{color:“var(–pink)”}}>{heatOnly.length}</div><div className="dhs-lbl">ヒート</div></div>
-<div><div className=“dhs-num” style={{color:“var(–gold)”}}>{breedingCount}</div><div className="dhs-lbl">交配</div></div>
-<div><div className=“dhs-num” style={{color:“var(–green)”}}>{birthCount}</div><div className="dhs-lbl">出産</div></div>
+<div className=”dog-hdr-stats”>
+<div><div className=“dhs-num” style={{color:“var(–pink)”}}>{heatOnly.length}</div><div className=”dhs-lbl”>ヒート</div></div>
+<div><div className=“dhs-num” style={{color:“var(–gold)”}}>{breedingCount}</div><div className=”dhs-lbl”>交配</div></div>
+<div><div className=“dhs-num” style={{color:“var(–green)”}}>{birthCount}</div><div className=”dhs-lbl”>出産</div></div>
 </div>
 </div>
 {/* 犬リストへの紐付けリンク */}
-<div className="link-row">
+<div className=”link-row”>
 <button className=“link-btn blue” onClick={() => onBack()}>🐾 犬リストへ戻る</button>
 </div>
 </div>
 {nextHeat && (
-<div className="next-heat">
-<div><div className="nh-label">🌸 次回ヒート予測（約6ヶ月後）</div><div className="nh-date">{formatDate(nextHeat)}</div></div>
+<div className=”next-heat”>
+<div><div className=”nh-label”>🌸 次回ヒート予測（約6ヶ月後）</div><div className=”nh-date”>{formatDate(nextHeat)}</div></div>
 <div style={{textAlign:“right”}}>
 {daysToNext !== null && (daysToNext > 0
 ? <div style={{fontSize:12}}>あと <strong style={{color:“var(–pink)”,fontSize:15}}>{daysToNext}</strong> 日</div>
@@ -649,71 +649,71 @@ return (
 </div>
 </div>
 )}
-<div className="timeline">
-{grouped.length === 0 && <div className="empty">記録がありません</div>}
+<div className=”timeline”>
+{grouped.length === 0 && <div className=”empty”>記録がありません</div>}
 {years.map((year, yi) => (
 <div key={year}>
-<div className="tl-year">{year}年</div>
+<div className=”tl-year”>{year}年</div>
 {byYear[year].map((r, i) => {
 const isLast = i === byYear[year].length-1 && yi === years.length-1;
 const sc = r.status ? (STATUS_COLOR[r.status]||STATUS_COLOR[“交配中”]) : null;
 const birthPups = puppies.filter(p => p.birthId === r.id);
 const isExp = expanded[r.id];
 return (
-<div key={r.id} className="tl-item">
-<div className="tl-line">
+<div key={r.id} className=”tl-item”>
+<div className=”tl-line”>
 <div className={`tl-dot ${r.type}`}>{r.type===“heat”?“🌸”:r.type===“birth”?“🐶”:“💞”}</div>
-{!isLast && <div className="tl-vline"/>}
+{!isLast && <div className=”tl-vline”/>}
 </div>
-<div className="tl-content">
+<div className=”tl-content”>
 {r.type === “heat” && (
-<div className="tl-card heat-card">
-<div className="tl-date">{formatDate(r.date)}</div>
-<div className="tl-type">🌸 ヒート開始</div>
-{r.note && <div className="tl-note">{r.note}</div>}
+<div className=”tl-card heat-card”>
+<div className=”tl-date”>{formatDate(r.date)}</div>
+<div className=”tl-type”>🌸 ヒート開始</div>
+{r.note && <div className=”tl-note”>{r.note}</div>}
 </div>
 )}
 {r.type === “breeding” && (
-<div className="tl-card breeding-card">
-<div className="tl-type">💞 交配（× {r.fatherName}）</div>
+<div className=”tl-card breeding-card”>
+<div className=”tl-type”>💞 交配（× {r.fatherName}）</div>
 <div style={{fontFamily:“DM Mono,monospace”,fontSize:11,color:“var(–text2)”,margin:“4px 0 2px”,lineHeight:1.7}}>
 {r._groupRecs ? r._groupRecs.map((x,i) => {
 const prev = i > 0 ? r._groupRecs[i-1].date : null;
 return (prev && x.date.slice(0,7)===prev.slice(0,7)) ? x.date.slice(8) : formatDate(x.date);
 }).join(”、”) : formatDate(r.date)}
 </div>
-<div className="tl-detail">計{r._groupRecs?r._groupRecs.length:1}回 · {r._groupRecs?[…new Set(r._groupRecs.map(x=>x.method))].join(”・”):r.method}</div>
-{sc && <span className="status-badge" style={{background:sc.bg,color:sc.text,borderColor:sc.border}}>{r.status}</span>}
-{r.note && <div className="tl-note">{r.note}</div>}
+<div className=”tl-detail”>計{r._groupRecs?r._groupRecs.length:1}回 · {r._groupRecs?[…new Set(r._groupRecs.map(x=>x.method))].join(”・”):r.method}</div>
+{sc && <span className=”status-badge” style={{background:sc.bg,color:sc.text,borderColor:sc.border}}>{r.status}</span>}
+{r.note && <div className=”tl-note”>{r.note}</div>}
 </div>
 )}
 {r.type === “birth” && (
-<div className="tl-card birth-card">
-<div className="tl-date">{formatDate(r.date)}</div>
-<div className="tl-type">🐶 出産（× {r.fatherName}）</div>
-<div className="tl-detail">{r.birthMethod}{r.pregnancyDays?` · 妊娠${r.pregnancyDays}日`:””}</div>
+<div className=”tl-card birth-card”>
+<div className=”tl-date”>{formatDate(r.date)}</div>
+<div className=”tl-type”>🐶 出産（× {r.fatherName}）</div>
+<div className=”tl-detail”>{r.birthMethod}{r.pregnancyDays?` · 妊娠${r.pregnancyDays}日`:””}</div>
 {r.totalPups != null && (
 <div className=“birth-summary” onClick={() => setExpanded(e => ({…e,[r.id]:!e[r.id]}))}>
 <div style={{display:“flex”,alignItems:“baseline”,justifyContent:“space-between”}}>
 <div style={{display:“flex”,alignItems:“baseline”,gap:5}}>
-<span className="birth-num">{r.totalPups}</span>
+<span className=”birth-num”>{r.totalPups}</span>
 <span style={{fontSize:12,color:“var(–text2)”}}>頭</span>
 </div>
 <span style={{fontSize:11,color:“var(–green)”}}>{isExp?“▲ 閉じる”:“▼ 仔犬を見る”}</span>
 </div>
-<div className="birth-detail">♂ オス {r.malePups}頭　♀ メス {r.femalePups}頭{r.stillborn>0?`　死産 ${r.stillborn}頭`:””}</div>
+<div className=”birth-detail”>♂ オス {r.malePups}頭　♀ メス {r.femalePups}頭{r.stillborn>0?`　死産 ${r.stillborn}頭`:””}</div>
 </div>
 )}
 {isExp && (
 <div>
 {birthPups.length > 0 ? (
-<div className="pup-grid">
+<div className=”pup-grid”>
 {birthPups.map(p => (
-<div key={p.id} className={`pup-chip ${p.gender==="オス"?"pm":"pf"}`} onClick={() => setEditPup(p)}>
-<div className="pup-chip-no">#{p.no}</div>
+<div key={p.id} className={`pup-chip ${p.gender===”オス”?”pm”:”pf”}`} onClick={() => setEditPup(p)}>
+<div className=”pup-chip-no”>#{p.no}</div>
 <div className=“pup-chip-gender” style={{color:p.gender===“オス”?“var(–blue)”:“var(–pink)”}}>{p.gender===“オス”?“♂”:“♀”} {p.gender}</div>
-<div className="pup-chip-color">{p.color||“未入力”}</div>
-{p.identifier && <div className="pup-chip-id">{p.identifier}</div>}
+<div className=”pup-chip-color”>{p.color||“未入力”}</div>
+{p.identifier && <div className=”pup-chip-id”>{p.identifier}</div>}
 </div>
 ))}
 </div>
@@ -724,7 +724,7 @@ setPuppies(ps => […ps, np]); setEditPup(np);
 }}>＋ 仔犬を追加</button>
 </div>
 )}
-{r.note && <div className="tl-note">{r.note}</div>}
+{r.note && <div className=”tl-note”>{r.note}</div>}
 </div>
 )}
 </div>
@@ -737,40 +737,40 @@ setPuppies(ps => […ps, np]); setEditPup(np);
 </>}
 
 ```
-  <div className="fab-wrap">
+  <div className=”fab-wrap”>
     {fabOpen && <>
-      <button className="fab-sub breeding" onClick={() => { setForm({date:todayStr(),method:"自然交配"}); setModal("breeding"); setFabOpen(false); }}>💞 交配を記録</button>
-      <button className="fab-sub heat" onClick={() => { setForm({date:todayStr()}); setModal("heat"); setFabOpen(false); }}>🌸 ヒートを記録</button>
+      <button className=”fab-sub breeding” onClick={() => { setForm({date:todayStr(),method:”自然交配”}); setModal(”breeding”); setFabOpen(false); }}>💞 交配を記録</button>
+      <button className=”fab-sub heat” onClick={() => { setForm({date:todayStr()}); setModal(”heat”); setFabOpen(false); }}>🌸 ヒートを記録</button>
     </>}
-    <button className="fab" onClick={() => setFabOpen(o => !o)}>{fabOpen?"✕":"＋"}</button>
+    <button className=”fab” onClick={() => setFabOpen(o => !o)}>{fabOpen?”✕”:”＋”}</button>
   </div>
 
-  {modal === "heat" && (
+  {modal === ”heat” && (
     <Modal title={`🌸 ヒートを記録 — ${selDog?.callName}`} onClose={() => setModal(null)}>
-      <div className="field"><label>ヒート開始日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save pink" onClick={() => { if (!form.date) return; setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:"heat",date:form.date,note:form.note||""}]); setModal(null); }}>記録する</button>
+      <div className=”field”><label>ヒート開始日</label><input type=”date” value={form.date||””} onChange={e => sf(”date”,e.target.value)} /></div>
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save pink” onClick={() => { if (!form.date) return; setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:”heat”,date:form.date,note:form.note||””}]); setModal(null); }}>記録する</button>
     </Modal>
   )}
-  {modal === "breeding" && (
+  {modal === ”breeding” && (
     <Modal title={`💞 交配を記録 — ${selDog?.callName}`} onClose={() => setModal(null)}>
-      <div className="field"><label>父犬</label>
-        <select value={form.fatherName||""} onChange={e => sf("fatherName",e.target.value)}>
-          <option value="">選択してください</option>
+      <div className=”field”><label>父犬</label>
+        <select value={form.fatherName||””} onChange={e => sf(”fatherName”,e.target.value)}>
+          <option value=””>選択してください</option>
           {allMales.map(m => <option key={m} value={m}>{m}</option>)}
-          <option value="__manual__">外部犬（手入力）</option>
+          <option value=”__manual__”>外部犬（手入力）</option>
         </select>
       </div>
-      {form.fatherName === "__manual__" && <div className="field"><label>父犬の名前</label><input value={form.fatherNameManual||""} onChange={e => sf("fatherNameManual",e.target.value)} /></div>}
-      <div className="field-row">
-        <div className="field"><label>交配日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
-        <div className="field"><label>交配方法</label><select value={form.method||"自然交配"} onChange={e => sf("method",e.target.value)}><option>自然交配</option><option>人工交配</option></select></div>
+      {form.fatherName === ”__manual__” && <div className=”field”><label>父犬の名前</label><input value={form.fatherNameManual||””} onChange={e => sf(”fatherNameManual”,e.target.value)} /></div>}
+      <div className=”field-row”>
+        <div className=”field”><label>交配日</label><input type=”date” value={form.date||””} onChange={e => sf(”date”,e.target.value)} /></div>
+        <div className=”field”><label>交配方法</label><select value={form.method||”自然交配”} onChange={e => sf(”method”,e.target.value)}><option>自然交配</option><option>人工交配</option></select></div>
       </div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
-        const fn = form.fatherName==="__manual__"?(form.fatherNameManual||"外部犬"):form.fatherName;
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
+        const fn = form.fatherName===”__manual__”?(form.fatherNameManual||”外部犬”):form.fatherName;
         if (!fn||!form.date) return;
-        setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:"breeding",date:form.date,fatherName:fn,method:form.method||"自然交配",status:"交配中",group:`g_${Date.now()}`,note:form.note||""}]);
+        setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:”breeding”,date:form.date,fatherName:fn,method:form.method||”自然交配”,status:”交配中”,group:`g_${Date.now()}`,note:form.note||””}]);
         setModal(null); setFabOpen(false);
       }}>記録する</button>
     </Modal>
@@ -795,18 +795,18 @@ if (screen === “list”) return <DogListScreen dogs={dogs} heatRecords={heatRe
 if (screen === “heat”) return <HeatScreen dogs={dogs} heatRecords={heatRecords} setHeatRecords={setHeatRecords} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen(null)} initialDog={heatInitDog} />;
 
 return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
-<Hdr title="🐕 犬の管理" sub="DOG MANAGEMENT" onBack={onBack} />
-<div className="menu-list">
+<Hdr title=”🐕 犬の管理” sub=”DOG MANAGEMENT” onBack={onBack} />
+<div className=”menu-list”>
 <div className=“menu-item” onClick={() => setScreen(“list”)}>
 <div className=“menu-item-icon” style={{background:“var(–blue-dim)”}}>🐾</div>
-<div><div className="menu-item-name">犬リスト・家系図</div><div className="menu-item-desc">個体情報・血統・3世代家系図</div></div>
+<div><div className=”menu-item-name”>犬リスト・家系図</div><div className=”menu-item-desc”>個体情報・血統・3世代家系図</div></div>
 <span style={{color:“var(–text3)”,fontSize:18,marginLeft:“auto”}}>›</span>
 </div>
 <div className=“menu-item” onClick={() => { setHeatInitDog(null); setScreen(“heat”); }}>
 <div className=“menu-item-icon” style={{background:“var(–pink-dim)”}}>🌸</div>
-<div><div className="menu-item-name">ヒート・交配・出産</div><div className="menu-item-desc">ヒート管理・交配記録・仔犬詳細</div></div>
+<div><div className=”menu-item-name”>ヒート・交配・出産</div><div className=”menu-item-desc”>ヒート管理・交配記録・仔犬詳細</div></div>
 <span style={{color:“var(–text3)”,fontSize:18,marginLeft:“auto”}}>›</span>
 </div>
 </div>
@@ -881,174 +881,174 @@ const getProductName = id => products.find(p => p.id === id)?.name || “不明�
 const getCustomerName = id => customers.find(c => c.id === id)?.name || “不明”;
 
 return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
-<Hdr title="🐓 鶏の管理" sub="CHICKEN MANAGEMENT" onBack={onBack} />
+<Hdr title=”🐓 鶏の管理” sub=”CHICKEN MANAGEMENT” onBack={onBack} />
 
 ```
   {/* サマリー */}
-  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,padding:"12px 20px 0"}}>
+  <div style={{display:”grid”,gridTemplateColumns:”1fr 1fr 1fr”,gap:8,padding:”12px 20px 0”}}>
     {[
-      { num: totalBirds, lbl: "総羽数",    color: "var(--green)" },
-      { num: todayEggs,  lbl: "本日産卵",  color: "var(--gold)"  },
-      { num: `¥${monthSales.toLocaleString()}`, lbl: "今月売上", color: "var(--blue)", small: true },
+      { num: totalBirds, lbl: ”総羽数”,    color: ”var(--green)” },
+      { num: todayEggs,  lbl: ”本日産卵”,  color: ”var(--gold)”  },
+      { num: `¥${monthSales.toLocaleString()}`, lbl: ”今月売上”, color: ”var(--blue)”, small: true },
     ].map((s,i) => (
-      <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 8px",textAlign:"center"}}>
-        <div style={{fontSize:s.small?14:20,fontWeight:900,fontFamily:"DM Mono",color:s.color}}>{s.num}</div>
-        <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>{s.lbl}</div>
+      <div key={i} style={{background:”var(--surface)”,border:”1px solid var(--border)”,borderRadius:8,padding:”10px 8px”,textAlign:”center”}}>
+        <div style={{fontSize:s.small?14:20,fontWeight:900,fontFamily:”DM Mono”,color:s.color}}>{s.num}</div>
+        <div style={{fontSize:10,color:”var(--text3)”,marginTop:2}}>{s.lbl}</div>
       </div>
     ))}
   </div>
 
   {/* タブ */}
-  <div style={{display:"flex",gap:6,padding:"12px 20px 0",overflowX:"auto",scrollbarWidth:"none"}}>
+  <div style={{display:”flex”,gap:6,padding:”12px 20px 0”,overflowX:”auto”,scrollbarWidth:”none”}}>
     {TABS.map(t => (
-      <button key={t.id} style={{padding:"7px 13px",borderRadius:20,border:`1px solid ${tab===t.id?"var(--green)":"var(--border2)"}`,background:tab===t.id?"var(--green-dim)":"none",fontFamily:"Noto Sans JP,sans-serif",fontSize:12,fontWeight:700,cursor:"pointer",color:tab===t.id?"var(--green)":"var(--text3)",whiteSpace:"nowrap",flexShrink:0}} onClick={() => setTab(t.id)}>{t.label}</button>
+      <button key={t.id} style={{padding:”7px 13px”,borderRadius:20,border:`1px solid ${tab===t.id?”var(--green)”:”var(--border2)”}`,background:tab===t.id?”var(--green-dim)”:”none”,fontFamily:”Noto Sans JP,sans-serif”,fontSize:12,fontWeight:700,cursor:”pointer”,color:tab===t.id?”var(--green)”:”var(--text3)”,whiteSpace:”nowrap”,flexShrink:0}} onClick={() => setTab(t.id)}>{t.label}</button>
     ))}
   </div>
 
-  <div style={{padding:"12px 20px",paddingBottom:100,flex:1,overflowY:"auto"}}>
+  <div style={{padding:”12px 20px”,paddingBottom:100,flex:1,overflowY:”auto”}}>
 
     {/* 群れ */}
-    {tab === "flock" && <>
+    {tab === ”flock” && <>
       {flocks.map(f => (
-        <div key={f.id} className="flock-card" style={{cursor:"default"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div key={f.id} className=”flock-card” style={{cursor:”default”}}>
+          <div style={{display:”flex”,justifyContent:”space-between”,alignItems:”flex-start”}}>
             <div>
-              <div className="flock-name">{f.breed}</div>
-              {f.note && <div style={{fontSize:11,color:"var(--gold)",marginTop:2}}>{f.note}</div>}
-              <div style={{display:"flex",gap:10,marginTop:6}}>
-                <span style={{fontSize:12,color:"var(--blue)"}}>♂ オス {f.male}羽</span>
-                <span style={{fontSize:12,color:"var(--pink)"}}>♀ メス {f.female}羽</span>
+              <div className=”flock-name”>{f.breed}</div>
+              {f.note && <div style={{fontSize:11,color:”var(--gold)”,marginTop:2}}>{f.note}</div>}
+              <div style={{display:”flex”,gap:10,marginTop:6}}>
+                <span style={{fontSize:12,color:”var(--blue)”}}>♂ オス {f.male}羽</span>
+                <span style={{fontSize:12,color:”var(--pink)”}}>♀ メス {f.female}羽</span>
               </div>
             </div>
-            <div style={{textAlign:"right"}}>
-              <div className="flock-count">{f.male+f.female}</div>
-              <div style={{fontSize:10,color:"var(--text3)"}}>羽</div>
+            <div style={{textAlign:”right”}}>
+              <div className=”flock-count”>{f.male+f.female}</div>
+              <div style={{fontSize:10,color:”var(--text3)”}}>羽</div>
             </div>
           </div>
         </div>
       ))}
-      <button style={{width:"100%",padding:"11px",borderRadius:"var(--r-sm)",border:"1px dashed var(--border2)",background:"none",fontFamily:"Noto Sans JP,sans-serif",fontSize:13,color:"var(--text3)",cursor:"pointer",marginTop:4}} onClick={() => { setForm({male:0,female:0}); setModal("flock"); }}>＋ 羽数を更新する</button>
+      <button style={{width:”100%”,padding:”11px”,borderRadius:”var(--r-sm)”,border:”1px dashed var(--border2)”,background:”none”,fontFamily:”Noto Sans JP,sans-serif”,fontSize:13,color:”var(--text3)”,cursor:”pointer”,marginTop:4}} onClick={() => { setForm({male:0,female:0}); setModal(”flock”); }}>＋ 羽数を更新する</button>
     </>}
 
     {/* 産卵 */}
-    {tab === "eggs" && <>
-      <div style={{background:"var(--green-dim)",border:"1px solid rgba(80,180,120,0.3)",borderRadius:"var(--r)",padding:"12px 16px",marginBottom:14}}>
-        <div style={{fontSize:11,color:"var(--green)",fontWeight:700,marginBottom:4}}>🥚 本日の産卵合計</div>
-        <div style={{fontSize:28,fontWeight:900,fontFamily:"DM Mono",color:"var(--green)"}}>{todayEggs}<span style={{fontSize:14,marginLeft:4}}>個</span></div>
+    {tab === ”eggs” && <>
+      <div style={{background:”var(--green-dim)”,border:”1px solid rgba(80,180,120,0.3)”,borderRadius:”var(--r)”,padding:”12px 16px”,marginBottom:14}}>
+        <div style={{fontSize:11,color:”var(--green)”,fontWeight:700,marginBottom:4}}>🥚 本日の産卵合計</div>
+        <div style={{fontSize:28,fontWeight:900,fontFamily:”DM Mono”,color:”var(--green)”}}>{todayEggs}<span style={{fontSize:14,marginLeft:4}}>個</span></div>
       </div>
       {eggs.sort((a,b)=>b.date.localeCompare(a.date)).map(e => (
-        <div key={e.id} className="egg-row">
+        <div key={e.id} className=”egg-row”>
           <span style={{fontWeight:600,fontSize:13}}>{getFlockName(e.flockId)}</span>
-          <span style={{fontSize:11,color:"var(--text3)",fontFamily:"DM Mono"}}>{formatDate(e.date)}</span>
-          <span className="egg-count">{e.count}個</span>
+          <span style={{fontSize:11,color:”var(--text3)”,fontFamily:”DM Mono”}}>{formatDate(e.date)}</span>
+          <span className=”egg-count”>{e.count}個</span>
         </div>
       ))}
     </>}
 
     {/* 孵化 */}
-    {tab === "hatch" && <>
-      {hatches.length === 0 && <div className="empty">孵化記録なし</div>}
+    {tab === ”hatch” && <>
+      {hatches.length === 0 && <div className=”empty”>孵化記録なし</div>}
       {hatches.map(h => (
-        <div key={h.id} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"13px 15px",marginBottom:10}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+        <div key={h.id} style={{background:”var(--surface)”,border:”1px solid var(--border)”,borderRadius:”var(--r)”,padding:”13px 15px”,marginBottom:10}}>
+          <div style={{display:”flex”,justifyContent:”space-between”,marginBottom:6}}>
             <span style={{fontWeight:700,fontSize:14}}>{getFlockName(h.flockId)}</span>
-            <span style={{fontSize:11,color:"var(--text3)",fontFamily:"DM Mono"}}>{formatDate(h.setDate)}</span>
+            <span style={{fontSize:11,color:”var(--text3)”,fontFamily:”DM Mono”}}>{formatDate(h.setDate)}</span>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
-            {[["セット",h.setCount,"個"],["孵化",h.hatchCount,"羽"],["孵化率",Math.round(h.hatchCount/h.setCount*100),"%"]].map(([l,v,u],i)=>(
-              <div key={i} style={{textAlign:"center",background:"var(--surface2)",borderRadius:6,padding:"7px 4px"}}>
-                <div style={{fontSize:16,fontWeight:900,fontFamily:"DM Mono",color:"var(--green)"}}>{v}{u}</div>
-                <div style={{fontSize:10,color:"var(--text3)"}}>{l}</div>
+          <div style={{display:”grid”,gridTemplateColumns:”1fr 1fr 1fr”,gap:8}}>
+            {[[”セット”,h.setCount,”個”],[”孵化”,h.hatchCount,”羽”],[”孵化率”,Math.round(h.hatchCount/h.setCount*100),”%”]].map(([l,v,u],i)=>(
+              <div key={i} style={{textAlign:”center”,background:”var(--surface2)”,borderRadius:6,padding:”7px 4px”}}>
+                <div style={{fontSize:16,fontWeight:900,fontFamily:”DM Mono”,color:”var(--green)”}}>{v}{u}</div>
+                <div style={{fontSize:10,color:”var(--text3)”}}>{l}</div>
               </div>
             ))}
           </div>
-          <div style={{display:"flex",gap:12,marginTop:8,fontSize:12}}>
-            <span style={{color:"var(--blue)"}}>♂ {h.male}羽</span>
-            <span style={{color:"var(--pink)"}}>♀ {h.female}羽</span>
-            {h.note && <span style={{color:"var(--text3)"}}>{h.note}</span>}
+          <div style={{display:”flex”,gap:12,marginTop:8,fontSize:12}}>
+            <span style={{color:”var(--blue)”}}>♂ {h.male}羽</span>
+            <span style={{color:”var(--pink)”}}>♀ {h.female}羽</span>
+            {h.note && <span style={{color:”var(--text3)”}}>{h.note}</span>}
           </div>
         </div>
       ))}
     </>}
 
     {/* 入荷 */}
-    {tab === "purchase" && <>
-      {purchases.length === 0 && <div className="empty">入荷記録なし</div>}
+    {tab === ”purchase” && <>
+      {purchases.length === 0 && <div className=”empty”>入荷記録なし</div>}
       {purchases.map(p => (
-        <div key={p.id} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"13px 15px",marginBottom:10}}>
-          <div style={{display:"flex",justifyContent:"space-between"}}>
+        <div key={p.id} style={{background:”var(--surface)”,border:”1px solid var(--border)”,borderRadius:”var(--r)”,padding:”13px 15px”,marginBottom:10}}>
+          <div style={{display:”flex”,justifyContent:”space-between”}}>
             <div>
               <div style={{fontWeight:700,fontSize:14}}>{getFlockName(p.flockId)}</div>
-              <div style={{fontSize:12,color:"var(--text2)",marginTop:3}}>{p.type} · {p.count}{p.type==="個体"?"羽":"個"}</div>
-              <div style={{fontSize:11,color:"var(--text3)",marginTop:2}}>仕入先: {p.from}</div>
-              {p.note && <div style={{fontSize:11,color:"var(--text3)",marginTop:2}}>{p.note}</div>}
+              <div style={{fontSize:12,color:”var(--text2)”,marginTop:3}}>{p.type} · {p.count}{p.type===”個体”?”羽”:”個”}</div>
+              <div style={{fontSize:11,color:”var(--text3)”,marginTop:2}}>仕入先: {p.from}</div>
+              {p.note && <div style={{fontSize:11,color:”var(--text3)”,marginTop:2}}>{p.note}</div>}
             </div>
-            <div style={{fontSize:11,color:"var(--text3)",fontFamily:"DM Mono"}}>{formatDate(p.date)}</div>
+            <div style={{fontSize:11,color:”var(--text3)”,fontFamily:”DM Mono”}}>{formatDate(p.date)}</div>
           </div>
         </div>
       ))}
     </>}
 
     {/* 販売 */}
-    {tab === "sales" && <>
-      <div style={{background:"var(--blue-dim)",border:"1px solid rgba(91,143,201,0.3)",borderRadius:"var(--r)",padding:"12px 16px",marginBottom:14}}>
-        <div style={{fontSize:11,color:"var(--blue)",fontWeight:700,marginBottom:4}}>💰 今月の売上</div>
-        <div style={{fontSize:26,fontWeight:900,fontFamily:"DM Mono",color:"var(--blue)"}}>¥{monthSales.toLocaleString()}</div>
+    {tab === ”sales” && <>
+      <div style={{background:”var(--blue-dim)”,border:”1px solid rgba(91,143,201,0.3)”,borderRadius:”var(--r)”,padding:”12px 16px”,marginBottom:14}}>
+        <div style={{fontSize:11,color:”var(--blue)”,fontWeight:700,marginBottom:4}}>💰 今月の売上</div>
+        <div style={{fontSize:26,fontWeight:900,fontFamily:”DM Mono”,color:”var(--blue)”}}>¥{monthSales.toLocaleString()}</div>
       </div>
       <div style={{marginBottom:10}}>
-        <div style={{fontSize:11,fontWeight:700,color:"var(--text3)",marginBottom:8}}>商品ラインナップ</div>
+        <div style={{fontSize:11,fontWeight:700,color:”var(--text3)”,marginBottom:8}}>商品ラインナップ</div>
         {products.map(p => (
-          <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"var(--r-sm)",marginBottom:6}}>
+          <div key={p.id} style={{display:”flex”,justifyContent:”space-between”,alignItems:”center”,padding:”8px 12px”,background:”var(--surface)”,border:”1px solid var(--border)”,borderRadius:”var(--r-sm)”,marginBottom:6}}>
             <div>
               <div style={{fontSize:13,fontWeight:600}}>{p.name}</div>
-              <div style={{fontSize:11,color:"var(--text3)"}}>{getFlockName(p.flockId)}</div>
+              <div style={{fontSize:11,color:”var(--text3)”}}>{getFlockName(p.flockId)}</div>
             </div>
-            <div style={{fontFamily:"DM Mono",fontWeight:700,color:"var(--gold)"}}>¥{p.price.toLocaleString()}</div>
+            <div style={{fontFamily:”DM Mono”,fontWeight:700,color:”var(--gold)”}}>¥{p.price.toLocaleString()}</div>
           </div>
         ))}
       </div>
-      <div style={{fontSize:11,fontWeight:700,color:"var(--text3)",marginBottom:8}}>販売記録</div>
+      <div style={{fontSize:11,fontWeight:700,color:”var(--text3)”,marginBottom:8}}>販売記録</div>
       {sales.sort((a,b)=>b.date.localeCompare(a.date)).map(s => (
-        <div key={s.id} style={{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"11px 14px",marginBottom:8}}>
-          <div style={{display:"flex",justifyContent:"space-between"}}>
+        <div key={s.id} style={{background:”var(--surface)”,border:”1px solid var(--border)”,borderRadius:”var(--r)”,padding:”11px 14px”,marginBottom:8}}>
+          <div style={{display:”flex”,justifyContent:”space-between”}}>
             <div>
               <div style={{fontWeight:700,fontSize:13}}>{getCustomerName(s.customerId)}</div>
-              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{getProductName(s.productId)} × {s.qty}</div>
-              <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>{s.channel} · {formatDate(s.date)}</div>
+              <div style={{fontSize:12,color:”var(--text2)”,marginTop:2}}>{getProductName(s.productId)} × {s.qty}</div>
+              <div style={{fontSize:10,color:”var(--text3)”,marginTop:2}}>{s.channel} · {formatDate(s.date)}</div>
             </div>
-            <div style={{fontFamily:"DM Mono",fontWeight:700,color:"var(--green)",fontSize:15}}>¥{s.total.toLocaleString()}</div>
+            <div style={{fontFamily:”DM Mono”,fontWeight:700,color:”var(--green)”,fontSize:15}}>¥{s.total.toLocaleString()}</div>
           </div>
         </div>
       ))}
     </>}
 
     {/* 顧客 */}
-    {tab === "customer" && <>
+    {tab === ”customer” && <>
       {customers.map(c => {
         const cSales = sales.filter(s => s.customerId === c.id);
         const cTotal = cSales.reduce((s, r) => s + r.total, 0);
         return (
-          <div key={c.id} style={{background:"var(--surface)",border:"1px solid var(--border)",borderLeft:"3px solid var(--green)",borderRadius:"var(--r)",padding:"13px 15px",marginBottom:10}}>
-            <div style={{display:"flex",justifyContent:"space-between"}}>
+          <div key={c.id} style={{background:”var(--surface)”,border:”1px solid var(--border)”,borderLeft:”3px solid var(--green)”,borderRadius:”var(--r)”,padding:”13px 15px”,marginBottom:10}}>
+            <div style={{display:”flex”,justifyContent:”space-between”}}>
               <div>
                 <div style={{fontWeight:700,fontSize:15}}>{c.name}</div>
-                <div style={{fontSize:11,color:"var(--text3)",marginTop:2}}>{c.contact}</div>
-                {c.note && <div style={{fontSize:11,color:"var(--gold)",marginTop:2}}>{c.note}</div>}
+                <div style={{fontSize:11,color:”var(--text3)”,marginTop:2}}>{c.contact}</div>
+                {c.note && <div style={{fontSize:11,color:”var(--gold)”,marginTop:2}}>{c.note}</div>}
               </div>
-              <div style={{textAlign:"right"}}>
-                <div style={{fontFamily:"DM Mono",fontWeight:700,color:"var(--green)"}}>¥{cTotal.toLocaleString()}</div>
-                <div style={{fontSize:10,color:"var(--text3)",marginTop:2}}>累計 {cSales.length}回</div>
+              <div style={{textAlign:”right”}}>
+                <div style={{fontFamily:”DM Mono”,fontWeight:700,color:”var(--green)”}}>¥{cTotal.toLocaleString()}</div>
+                <div style={{fontSize:10,color:”var(--text3)”,marginTop:2}}>累計 {cSales.length}回</div>
               </div>
             </div>
             {cSales.length > 0 && (
-              <div style={{marginTop:8,paddingTop:8,borderTop:"1px solid var(--border)"}}>
-                <div style={{fontSize:10,color:"var(--text3)",marginBottom:5}}>購入履歴</div>
+              <div style={{marginTop:8,paddingTop:8,borderTop:”1px solid var(--border)”}}>
+                <div style={{fontSize:10,color:”var(--text3)”,marginBottom:5}}>購入履歴</div>
                 {cSales.sort((a,b)=>b.date.localeCompare(a.date)).map(s => (
-                  <div key={s.id} style={{display:"flex",justifyContent:"space-between",fontSize:12,padding:"3px 0"}}>
-                    <span style={{color:"var(--text2)"}}>{getProductName(s.productId)} ×{s.qty}</span>
-                    <span style={{fontFamily:"DM Mono",color:"var(--text3)"}}>{formatDate(s.date)}</span>
+                  <div key={s.id} style={{display:”flex”,justifyContent:”space-between”,fontSize:12,padding:”3px 0”}}>
+                    <span style={{color:”var(--text2)”}}>{getProductName(s.productId)} ×{s.qty}</span>
+                    <span style={{fontFamily:”DM Mono”,color:”var(--text3)”}}>{formatDate(s.date)}</span>
                   </div>
                 ))}
               </div>
@@ -1060,148 +1060,148 @@ return (
   </div>
 
   {/* FAB */}
-  <button className="fab" style={{position:"fixed",bottom:26,right:22}} onClick={() => {
-    if (tab==="eggs")     { setForm({date:todayStr(),flockId:flocks[0]?.id}); setModal("egg"); }
-    if (tab==="hatch")    { setForm({setDate:todayStr(),flockId:flocks[0]?.id}); setModal("hatch"); }
-    if (tab==="purchase") { setForm({date:todayStr(),flockId:flocks[0]?.id,type:"個体"}); setModal("purchase"); }
-    if (tab==="sales")    { setForm({date:todayStr(),customerId:customers[0]?.id,productId:products[0]?.id,qty:1,channel:"ストアーズ"}); setModal("sale"); }
-    if (tab==="customer") { setForm({}); setModal("customer"); }
+  <button className=”fab” style={{position:”fixed”,bottom:26,right:22}} onClick={() => {
+    if (tab===”eggs”)     { setForm({date:todayStr(),flockId:flocks[0]?.id}); setModal(”egg”); }
+    if (tab===”hatch”)    { setForm({setDate:todayStr(),flockId:flocks[0]?.id}); setModal(”hatch”); }
+    if (tab===”purchase”) { setForm({date:todayStr(),flockId:flocks[0]?.id,type:”個体”}); setModal(”purchase”); }
+    if (tab===”sales”)    { setForm({date:todayStr(),customerId:customers[0]?.id,productId:products[0]?.id,qty:1,channel:”ストアーズ”}); setModal(”sale”); }
+    if (tab===”customer”) { setForm({}); setModal(”customer”); }
   }}>＋</button>
 
   {/* MODALS */}
-  {modal === "flock" && (
-    <Modal title="羽数を更新" onClose={() => setModal(null)}>
-      <div className="field"><label>品種</label>
-        <select value={form.flockId||""} onChange={e => sf("flockId",e.target.value)}>
+  {modal === ”flock” && (
+    <Modal title=”羽数を更新” onClose={() => setModal(null)}>
+      <div className=”field”><label>品種</label>
+        <select value={form.flockId||””} onChange={e => sf(”flockId”,e.target.value)}>
           {flocks.map(f => <option key={f.id} value={f.id}>{f.breed}</option>)}
         </select>
       </div>
-      <div className="field-row">
-        <div className="field"><label>オス羽数</label><input type="number" value={form.male||0} onChange={e => sf("male",parseInt(e.target.value)||0)} /></div>
-        <div className="field"><label>メス羽数</label><input type="number" value={form.female||0} onChange={e => sf("female",parseInt(e.target.value)||0)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>オス羽数</label><input type=”number” value={form.male||0} onChange={e => sf(”male”,parseInt(e.target.value)||0)} /></div>
+        <div className=”field”><label>メス羽数</label><input type=”number” value={form.female||0} onChange={e => sf(”female”,parseInt(e.target.value)||0)} /></div>
       </div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         setFlocks(fs => fs.map(f => f.id===form.flockId ? {...f,male:form.male,female:form.female} : f));
         setModal(null);
       }}>更新する</button>
     </Modal>
   )}
-  {modal === "egg" && (
-    <Modal title="🥚 産卵を記録" onClose={() => setModal(null)}>
-      <div className="field"><label>品種</label>
-        <select value={form.flockId||""} onChange={e => sf("flockId",e.target.value)}>
+  {modal === ”egg” && (
+    <Modal title=”🥚 産卵を記録” onClose={() => setModal(null)}>
+      <div className=”field”><label>品種</label>
+        <select value={form.flockId||””} onChange={e => sf(”flockId”,e.target.value)}>
           {flocks.map(f => <option key={f.id} value={f.id}>{f.breed}</option>)}
         </select>
       </div>
-      <div className="field"><label>日付</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
-      <div className="field"><label>産卵数</label><input type="number" value={form.count||""} onChange={e => sf("count",parseInt(e.target.value)||0)} /></div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+      <div className=”field”><label>日付</label><input type=”date” value={form.date||””} onChange={e => sf(”date”,e.target.value)} /></div>
+      <div className=”field”><label>産卵数</label><input type=”number” value={form.count||””} onChange={e => sf(”count”,parseInt(e.target.value)||0)} /></div>
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         if (!form.flockId||!form.date) return;
-        setEggs(es => [...es, {id:`e${Date.now()}`,flockId:form.flockId,date:form.date,count:form.count||0,note:form.note||""}]);
+        setEggs(es => [...es, {id:`e${Date.now()}`,flockId:form.flockId,date:form.date,count:form.count||0,note:form.note||””}]);
         setModal(null);
       }}>記録する</button>
     </Modal>
   )}
-  {modal === "hatch" && (
-    <Modal title="🐣 孵化を記録" onClose={() => setModal(null)}>
-      <div className="field"><label>品種</label>
-        <select value={form.flockId||""} onChange={e => sf("flockId",e.target.value)}>
+  {modal === ”hatch” && (
+    <Modal title=”🐣 孵化を記録” onClose={() => setModal(null)}>
+      <div className=”field”><label>品種</label>
+        <select value={form.flockId||””} onChange={e => sf(”flockId”,e.target.value)}>
           {flocks.map(f => <option key={f.id} value={f.id}>{f.breed}</option>)}
         </select>
       </div>
-      <div className="field-row">
-        <div className="field"><label>セット日</label><input type="date" value={form.setDate||""} onChange={e => sf("setDate",e.target.value)} /></div>
-        <div className="field"><label>セット数</label><input type="number" value={form.setCount||""} onChange={e => sf("setCount",parseInt(e.target.value)||0)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>セット日</label><input type=”date” value={form.setDate||””} onChange={e => sf(”setDate”,e.target.value)} /></div>
+        <div className=”field”><label>セット数</label><input type=”number” value={form.setCount||””} onChange={e => sf(”setCount”,parseInt(e.target.value)||0)} /></div>
       </div>
-      <div className="field-row">
-        <div className="field"><label>孵化日</label><input type="date" value={form.hatchDate||""} onChange={e => sf("hatchDate",e.target.value)} /></div>
-        <div className="field"><label>孵化数</label><input type="number" value={form.hatchCount||""} onChange={e => sf("hatchCount",parseInt(e.target.value)||0)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>孵化日</label><input type=”date” value={form.hatchDate||””} onChange={e => sf(”hatchDate”,e.target.value)} /></div>
+        <div className=”field”><label>孵化数</label><input type=”number” value={form.hatchCount||””} onChange={e => sf(”hatchCount”,parseInt(e.target.value)||0)} /></div>
       </div>
-      <div className="field-row">
-        <div className="field"><label>オス</label><input type="number" value={form.male||""} onChange={e => sf("male",parseInt(e.target.value)||0)} /></div>
-        <div className="field"><label>メス</label><input type="number" value={form.female||""} onChange={e => sf("female",parseInt(e.target.value)||0)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>オス</label><input type=”number” value={form.male||””} onChange={e => sf(”male”,parseInt(e.target.value)||0)} /></div>
+        <div className=”field”><label>メス</label><input type=”number” value={form.female||””} onChange={e => sf(”female”,parseInt(e.target.value)||0)} /></div>
       </div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         if (!form.flockId||!form.setDate) return;
-        setHatches(hs => [...hs, {id:`h${Date.now()}`,flockId:form.flockId,setDate:form.setDate,setCount:form.setCount||0,hatchDate:form.hatchDate||"",hatchCount:form.hatchCount||0,male:form.male||0,female:form.female||0,note:form.note||""}]);
+        setHatches(hs => [...hs, {id:`h${Date.now()}`,flockId:form.flockId,setDate:form.setDate,setCount:form.setCount||0,hatchDate:form.hatchDate||””,hatchCount:form.hatchCount||0,male:form.male||0,female:form.female||0,note:form.note||””}]);
         setModal(null);
       }}>記録する</button>
     </Modal>
   )}
-  {modal === "purchase" && (
-    <Modal title="📦 入荷を記録" onClose={() => setModal(null)}>
-      <div className="field"><label>品種</label>
-        <select value={form.flockId||""} onChange={e => sf("flockId",e.target.value)}>
+  {modal === ”purchase” && (
+    <Modal title=”📦 入荷を記録” onClose={() => setModal(null)}>
+      <div className=”field”><label>品種</label>
+        <select value={form.flockId||””} onChange={e => sf(”flockId”,e.target.value)}>
           {flocks.map(f => <option key={f.id} value={f.id}>{f.breed}</option>)}
         </select>
       </div>
-      <div className="field-row">
-        <div className="field"><label>日付</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
-        <div className="field"><label>種類</label>
-          <select value={form.type||"個体"} onChange={e => sf("type",e.target.value)}>
+      <div className=”field-row”>
+        <div className=”field”><label>日付</label><input type=”date” value={form.date||””} onChange={e => sf(”date”,e.target.value)} /></div>
+        <div className=”field”><label>種類</label>
+          <select value={form.type||”個体”} onChange={e => sf(”type”,e.target.value)}>
             <option>個体</option><option>卵（孵化用）</option>
           </select>
         </div>
       </div>
-      <div className="field-row">
-        <div className="field"><label>数量</label><input type="number" value={form.count||""} onChange={e => sf("count",parseInt(e.target.value)||0)} /></div>
-        <div className="field"><label>仕入先</label><input value={form.from||""} onChange={e => sf("from",e.target.value)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>数量</label><input type=”number” value={form.count||””} onChange={e => sf(”count”,parseInt(e.target.value)||0)} /></div>
+        <div className=”field”><label>仕入先</label><input value={form.from||””} onChange={e => sf(”from”,e.target.value)} /></div>
       </div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         if (!form.flockId||!form.date) return;
-        setPurchases(ps => [...ps, {id:`pu${Date.now()}`,flockId:form.flockId,date:form.date,type:form.type||"個体",count:form.count||0,from:form.from||"",note:form.note||""}]);
+        setPurchases(ps => [...ps, {id:`pu${Date.now()}`,flockId:form.flockId,date:form.date,type:form.type||”個体”,count:form.count||0,from:form.from||””,note:form.note||””}]);
         setModal(null);
       }}>記録する</button>
     </Modal>
   )}
-  {modal === "sale" && (
-    <Modal title="💰 販売を記録" onClose={() => setModal(null)}>
-      <div className="field"><label>顧客</label>
-        <select value={form.customerId||""} onChange={e => sf("customerId",e.target.value)}>
+  {modal === ”sale” && (
+    <Modal title=”💰 販売を記録” onClose={() => setModal(null)}>
+      <div className=”field”><label>顧客</label>
+        <select value={form.customerId||””} onChange={e => sf(”customerId”,e.target.value)}>
           {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
       </div>
-      <div className="field"><label>商品</label>
-        <select value={form.productId||""} onChange={e => {
+      <div className=”field”><label>商品</label>
+        <select value={form.productId||””} onChange={e => {
           const p = products.find(p => p.id===e.target.value);
-          sf("productId",e.target.value);
-          if (p) sf("unitPrice",p.price);
+          sf(”productId”,e.target.value);
+          if (p) sf(”unitPrice”,p.price);
         }}>
           {products.map(p => <option key={p.id} value={p.id}>{p.name} ¥{p.price.toLocaleString()}</option>)}
         </select>
       </div>
-      <div className="field-row">
-        <div className="field"><label>日付</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
-        <div className="field"><label>数量</label><input type="number" value={form.qty||1} onChange={e => sf("qty",parseInt(e.target.value)||1)} /></div>
+      <div className=”field-row”>
+        <div className=”field”><label>日付</label><input type=”date” value={form.date||””} onChange={e => sf(”date”,e.target.value)} /></div>
+        <div className=”field”><label>数量</label><input type=”number” value={form.qty||1} onChange={e => sf(”qty”,parseInt(e.target.value)||1)} /></div>
       </div>
-      <div className="field"><label>販売チャネル</label>
-        <select value={form.channel||"ストアーズ"} onChange={e => sf("channel",e.target.value)}>
+      <div className=”field”><label>販売チャネル</label>
+        <select value={form.channel||”ストアーズ”} onChange={e => sf(”channel”,e.target.value)}>
           <option>ストアーズ</option><option>BASE</option><option>無人販売所</option><option>その他</option>
         </select>
       </div>
-      <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+      <div className=”field”><label>メモ</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         if (!form.customerId||!form.productId||!form.date) return;
         const p = products.find(p => p.id===form.productId);
         const total = (p?.price||0) * (form.qty||1);
-        setSales(ss => [...ss, {id:`s${Date.now()}`,customerId:form.customerId,productId:form.productId,date:form.date,qty:form.qty||1,total,channel:form.channel||"ストアーズ",note:form.note||""}]);
+        setSales(ss => [...ss, {id:`s${Date.now()}`,customerId:form.customerId,productId:form.productId,date:form.date,qty:form.qty||1,total,channel:form.channel||”ストアーズ”,note:form.note||””}]);
         setModal(null);
       }}>記録する</button>
     </Modal>
   )}
-  {modal === "customer" && (
-    <Modal title="👤 顧客を追加" onClose={() => setModal(null)}>
-      <div className="field"><label>お名前</label><input value={form.name||""} onChange={e => sf("name",e.target.value)} placeholder="例: 田中様" /></div>
-      <div className="field"><label>連絡先（メールなど）</label><input value={form.contact||""} onChange={e => sf("contact",e.target.value)} /></div>
-      <div className="field"><label>住所</label><input value={form.address||""} onChange={e => sf("address",e.target.value)} /></div>
-      <div className="field"><label>メモ（販売チャネルなど）</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-      <button className="btn-save" onClick={() => {
+  {modal === ”customer” && (
+    <Modal title=”👤 顧客を追加” onClose={() => setModal(null)}>
+      <div className=”field”><label>お名前</label><input value={form.name||””} onChange={e => sf(”name”,e.target.value)} placeholder=”例: 田中様” /></div>
+      <div className=”field”><label>連絡先（メールなど）</label><input value={form.contact||””} onChange={e => sf(”contact”,e.target.value)} /></div>
+      <div className=”field”><label>住所</label><input value={form.address||””} onChange={e => sf(”address”,e.target.value)} /></div>
+      <div className=”field”><label>メモ（販売チャネルなど）</label><textarea value={form.note||””} onChange={e => sf(”note”,e.target.value)} /></div>
+      <button className=”btn-save” onClick={() => {
         if (!form.name) return;
-        setCustomers(cs => [...cs, {id:`c${Date.now()}`,name:form.name,contact:form.contact||"",address:form.address||"",note:form.note||""}]);
+        setCustomers(cs => [...cs, {id:`c${Date.now()}`,name:form.name,contact:form.contact||””,address:form.address||””,note:form.note||””}]);
         setModal(null);
       }}>登録する</button>
     </Modal>
@@ -1225,7 +1225,7 @@ const [screen, setScreen] = useState(“home”);
 const [syncStatus, setSyncStatus] = useState(null); // null | “saving” | “saved” | “error”
 
 const now = new Date();
-const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}（${"日月火水木金土"[now.getDay()]}）`;
+const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,”0”)}/${String(now.getDate()).padStart(2,”0”)}（${”日月火水木金土”[now.getDay()]}）`;
 
 // スプレッドシートに保存
 const saveToSheets = async () => {
@@ -1260,52 +1260,52 @@ if (screen === “dogs”) return <><style>{S}</style><DogModule dogs={dogs} hea
 if (screen === “chickens”) return <><style>{S}</style><ChickenModule onBack={() => setScreen(“home”)} /></>;
 
 return (
-<div className="app">
+<div className=”app”>
 <style>{S}</style>
-<Hdr title="🌾 ファーム管理" sub="FARM MANAGEMENT" />
-<div className="home-hero">
-<div className="home-eyebrow">My Farm</div>
-<div className="home-title">わんこと鶏の<br /><em>管理帳</em></div>
-<div className="home-date">{dateStr}</div>
+<Hdr title=”🌾 ファーム管理” sub=”FARM MANAGEMENT” />
+<div className=”home-hero”>
+<div className=”home-eyebrow”>My Farm</div>
+<div className=”home-title”>わんこと鶏の<br /><em>管理帳</em></div>
+<div className=”home-date”>{dateStr}</div>
 </div>
 
 ```
-  <div className="home-cards">
-    <div className="home-card dog" onClick={() => setScreen("dogs")}>
-      <div className="home-card-icon dog">🐕</div>
-      <div className="home-card-info">
-        <div className="home-card-name">犬の管理</div>
-        <div className="home-card-desc">犬リスト・家系図・ヒート・交配・出産</div>
+  <div className=”home-cards”>
+    <div className=”home-card dog” onClick={() => setScreen(”dogs”)}>
+      <div className=”home-card-icon dog”>🐕</div>
+      <div className=”home-card-info”>
+        <div className=”home-card-name”>犬の管理</div>
+        <div className=”home-card-desc”>犬リスト・家系図・ヒート・交配・出産</div>
       </div>
-      <span style={{color:"var(--text3)",fontSize:22}}>›</span>
+      <span style={{color:”var(--text3)”,fontSize:22}}>›</span>
     </div>
-    <div className="home-card chicken" onClick={() => setScreen("chickens")}>
-      <div className="home-card-icon chicken">🐓</div>
-      <div className="home-card-info">
-        <div className="home-card-name">鶏の管理</div>
-        <div className="home-card-desc">群れ・産卵・飼料・販売・顧客</div>
+    <div className=”home-card chicken” onClick={() => setScreen(”chickens”)}>
+      <div className=”home-card-icon chicken”>🐓</div>
+      <div className=”home-card-info”>
+        <div className=”home-card-name”>鶏の管理</div>
+        <div className=”home-card-desc”>群れ・産卵・飼料・販売・顧客</div>
       </div>
-      <span style={{color:"var(--text3)",fontSize:22}}>›</span>
+      <span style={{color:”var(--text3)”,fontSize:22}}>›</span>
     </div>
 
     {/* スプレッドシート同期ボタン */}
     <div style={{marginTop:8}}>
       <button
         onClick={saveToSheets}
-        disabled={syncStatus === "saving"}
+        disabled={syncStatus === ”saving”}
         style={{
-          width:"100%", padding:"13px", borderRadius:"var(--r)",
-          border:"1px solid rgba(201,168,76,0.4)",
-          background: syncStatus ? syncStatusStyle[syncStatus].bg : "var(--gold-dim)",
-          color: syncStatus ? syncStatusStyle[syncStatus].color : "var(--gold)",
-          fontFamily:"Noto Sans JP,sans-serif", fontSize:14, fontWeight:700,
-          cursor: syncStatus==="saving" ? "not-allowed" : "pointer",
-          transition:"all 0.2s",
+          width:”100%”, padding:”13px”, borderRadius:”var(--r)”,
+          border:”1px solid rgba(201,168,76,0.4)”,
+          background: syncStatus ? syncStatusStyle[syncStatus].bg : ”var(--gold-dim)”,
+          color: syncStatus ? syncStatusStyle[syncStatus].color : ”var(--gold)”,
+          fontFamily:”Noto Sans JP,sans-serif”, fontSize:14, fontWeight:700,
+          cursor: syncStatus===”saving” ? ”not-allowed” : ”pointer”,
+          transition:”all 0.2s”,
         }}
       >
-        {syncStatus ? syncStatusStyle[syncStatus].text : "📊 スプレッドシートに保存"}
+        {syncStatus ? syncStatusStyle[syncStatus].text : ”📊 スプレッドシートに保存”}
       </button>
-      <div style={{fontSize:10,color:"var(--text3)",textAlign:"center",marginTop:5}}>
+      <div style={{fontSize:10,color:”var(--text3)”,textAlign:”center”,marginTop:5}}>
         Googleスプレッドシートにデータをバックアップ
       </div>
     </div>
