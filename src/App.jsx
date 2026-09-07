@@ -259,6 +259,158 @@ function DogFormModal({ dog, dogs, breeds, onClose, onSave }) {
       )}
       <div className="field"><label>血統書名</label><input value={form.pedigreeName || ""} onChange={e => s("pedigreeName", e.target.value)} /></div>
       <div className="field-row">
+        <div className="field"><label>生年月日</label><input type="date" value={form.birthdaar(--gold);color:var(--gold)}
+.dog-list{padding:12px 20px;display:flex;flex-direction:column;gap:9px;padding-bottom:100px}
+.dog-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.dog-card.husky{border-left:3px solid var(--blue)}
+.dog-card.corgi{border-left:3px solid var(--corgi)}
+.dog-av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dog-av.husky{background:var(--blue-dim)}
+.dog-av.corgi{background:var(--corgi-dim)}
+.dog-callname{font-size:15px;font-weight:700}
+.dog-badges{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.badge.female{background:rgba(212,120,158,0.2);color:var(--pink)}
+.badge.male{background:var(--blue-dim);color:var(--blue)}
+.badge.age{background:var(--surface2);color:var(--text2)}
+.detail-hero{padding:18px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.detail-name{font-size:26px;font-weight:900}
+.detail-ped{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:3px}
+.detail-badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin:12px 20px 0;padding:14px 16px}
+.info-card-title{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:11px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.info-item label{font-size:10px;color:var(--text3);display:block;margin-bottom:2px}
+.info-item span{font-size:13px;font-weight:500}
+.info-item.full{grid-column:1/-1}
+.link-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.link-btn{padding:7px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;cursor:pointer;color:var(--text2)}
+.link-btn.gold{border-color:rgba(201,168,76,0.4);color:var(--gold);background:var(--gold-dim)}
+.tree-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin:12px 20px 0;padding:14px 16px}
+.tree-title{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+.tree-wrap{overflow-x:auto;padding-bottom:4px}
+.tree-box{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;min-width:84px;cursor:pointer}
+.tree-box.mine{border-color:var(--gold);background:var(--gold-dim)}
+.tree-box.ext{border-style:dashed;opacity:0.7}
+.tree-box .t-name{font-size:12px;font-weight:700}
+.tree-box .t-role{font-size:9px;color:var(--text3);margin-top:1px}
+.tree-box.m .t-name{color:var(--blue)}
+.tree-box.f .t-name{color:var(--pink)}
+.tree-box.mine .t-name{color:var(--gold2)}
+.fab-wrap{position:fixed;bottom:26px;right:22px;display:flex;flex-direction:column;gap:9px;align-items:flex-end;z-index:150}
+.fab{width:54px;height:54px;border-radius:15px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,168,76,0.35);font-size:22px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:flex-end}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);padding:18px 20px 40px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--gold2)}
+.field{margin-bottom:13px}
+.field label{font-size:11px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:var(--surface2);color:var(--text);outline:none}
+.field select option{background:var(--surface2)}
+.field textarea{resize:vertical;min-height:56px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-save{width:100%;padding:12px;border-radius:10px;border:none;background:var(--gold);color:var(--bg);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px}
+.btn-cancel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border2);background:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;margin-top:7px;color:var(--text3)}
+.empty{text-align:center;color:var(--text3);font-size:13px;padding:40px 0}
+.flock-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;cursor:pointer;border-left:3px solid var(--green);margin-bottom:9px}
+.flock-name{font-size:15px;font-weight:700}
+.flock-count{font-size:26px;font-weight:900;font-family:'DM Mono',monospace;color:var(--green)}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.stat-num{font-size:20px;font-weight:900;font-family:'DM Mono',monospace}
+`;
+
+// ============================================================
+// SHARED COMPONENTS
+// ============================================================
+function Hdr({ title, sub, onBack }) {
+  return (
+    <div className="hdr">
+      {onBack && <button className="hdr-back" onClick={onBack}>←</button>}
+      <div><div className="hdr-title">{title}</div>{sub && <div className="hdr-sub">{sub}</div>}</div>
+    </div>
+  );
+}
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="overlay" onClick={e => e.target.className === "overlay" && onClose()}>
+      <div className="modal">
+        <div className="modal-title">{title}</div>
+        {children}
+        <button className="btn-cancel" onClick={onClose}>キャンセル</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// FAMILY TREE
+// ============================================================
+function FamilyTree({ dog, allDogs, onSelect }) {
+  const lookup = (id) => allDogs.find(d => d.id === id) || findDog(id);
+  const fa = lookup(dog.fatherId), mo = lookup(dog.motherId);
+  const ff = fa ? lookup(fa.fatherId) : null, fm = fa ? lookup(fa.motherId) : null;
+  const mf = mo ? lookup(mo.fatherId) : null, mm = mo ? lookup(mo.motherId) : null;
+  const Box = ({ d, role }) => {
+    if (!d) return <div className="tree-box ext"><div className="t-name" style={{color:"var(--text3)"}}>不明</div><div className="t-role">{role}</div></div>;
+    const mine = !d.external;
+    return <div className={`tree-box ${mine?"mine":"ext"} ${d.gender==="オス"?"m":"f"}`} onClick={() => mine && onSelect(d)}>
+      <div className="t-name">{d.callName}</div><div className="t-role">{role}{d.external?" (外)":""}</div>
+    </div>;
+  };
+  const line = <div style={{width:20,height:1,background:"var(--border2)"}}/>;
+  return (
+    <div className="tree-wrap">
+      <div style={{display:"flex",alignItems:"center",gap:0,minWidth:"max-content"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:32}}>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}><Box d={ff} role="父方祖父"/><Box d={fm} role="父方祖母"/></div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}><Box d={mf} role="母方祖父"/><Box d={mm} role="母方祖母"/></div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:32,width:20}}>
+          <div style={{display:"flex",alignItems:"center",height:66}}>{line}</div>
+          <div style={{display:"flex",alignItems:"center",height:66}}>{line}</div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:32}}><Box d={fa} role="父"/><Box d={mo} role="母"/></div>
+        {line}
+        <div className="tree-box mine" style={{borderWidth:2,minWidth:90}}>
+          <div className="t-name" style={{fontSize:13}}>{dog.callName}</div><div className="t-role">本犬</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// ADD / EDIT DOG MODAL
+// ============================================================
+function DogFormModal({ dog, dogs, breeds, onClose, onSave }) {
+  const [form, setForm] = useState(dog ? { ...dog } : { gender: "メス", breed: breeds[0] || "" });
+  const [customBreed, setCustomBreed] = useState("");
+  const s = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const isEdit = !!dog;
+
+  return (
+    <Modal title={isEdit ? `✏️ ${dog.callName} を編集` : "🐾 新しい犬を登録"} onClose={onClose}>
+      <div className="field-row">
+        <div className="field"><label>コールネーム *</label><input value={form.callName || ""} onChange={e => s("callName", e.target.value)} /></div>
+        <div className="field"><label>性別</label>
+          <select value={form.gender} onChange={e => s("gender", e.target.value)}><option>メス</option><option>オス</option></select>
+        </div>
+      </div>
+      <div className="field"><label>犬種</label>
+        <select value={form.breed === customBreed && customBreed ? "__custom__" : form.breed} onChange={e => {
+          if (e.target.value === "__custom__") { s("breed", customBreed); }
+          else s("breed", e.target.value);
+        }}>
+          {breeds.map(b => <option key={b} value={b}>{b}</option>)}
+          <option value="__custom__">＋ 新しい犬種を追加</option>
+        </select>
+      </div>
+      {(!breeds.includes(form.breed) || form.breed === "__custom__") && (
+        <div className="field"><label>新しい犬種名</label>
+          <input value={customBreed} onChange={e => { setCustomBreed(e.target.value); s("breed", e.target.value); }} placeholder="例: 柴犬" />
+        </div>
+      )}
+      <div className="field"><label>血統書名</label><input value={form.pedigreeName || ""} onChange={e => s("pedigreeName", e.target.value)} /></div>
+      <div className="field-row">
         <div className="field"><label>生年月日</label><input type="date" value={form.birthda        <button onClick={() => setFilter("all")} style={{ fontWeight: filter === "all" ? "bold" : "normal" }}>すべて</button>
         <button onClick={() => setFilter("ハスキー")} style={{ fontWeight: filter === "ハスキー" ? "bold" : "normal" }}>🐺 ハスキー</button>
         <button onClick={() => setFilter("コーギー")} style={{ fontWeight: filter === "コーギー" ? "bold" : "normal" }}>🐕 コーギー</button>
