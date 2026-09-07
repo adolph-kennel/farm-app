@@ -1,73 +1,465 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-// ============================================================
-// DATA
-// ============================================================
+// --- Helper Functions ---
+const todayStr = () => new Date().toISOString().split("T")[0];
+
+// --- Mock Data ---
 const DOGS_DATA = [
-  { id: "uri",     callName: "ウリ",      pedigreeName: "ADOLPH JP KALI",                      jkc: "HU-01349/23",   chip: "",              gender: "メス", birthdate: "2023-05-20", color: "BLACK & WHITE",  breed: "シベリアンハスキー",  fatherId: "zeus",   motherId: "kaoru",  note: "" },
-  { id: "sae",     callName: "サエ",      pedigreeName: "ADOLPH JP MUT",                       jkc: "HU-00209/23",   chip: "392149002201909", gender: "メス", birthdate: "2022-11-17", color: "SILVER & WHITE", breed: "シベリアンハスキー",  fatherId: "ace",    motherId: "ran",    note: "" },
-  { id: "luna",    callName: "ルナ",      pedigreeName: "ADOLPH JP LUNA FROST",                jkc: "HU-00468/26",   chip: "",              gender: "メス", birthdate: "2025-12-10", color: "BLACK & WHITE",  breed: "シベリアンハスキー",  fatherId: "waru",   motherId: "sae",    note: "" },
-  { id: "uran",    callName: "ウラン",    pedigreeName: "BIRDIE OF OSAKA SAEKI JP",            jkc: "HU-00298/23",   chip: "",              gender: "メス", birthdate: "2022-11-24", color: "SILVER & WHITE", breed: "シベリアンハスキー",  fatherId: "ares",   motherId: "anna",   note: "" },
-  { id: "nacchan", callName: "なっちゃん", pedigreeName: "ADOLPH JP SEDONA",                    jkc: "HU-00579/25",   chip: "",              gender: "メス", birthdate: "2025-01-01", color: "SILVER & WHITE", breed: "シベリアンハスキー",  fatherId: "runo",   motherId: "kaoru",  note: "初産" },
-  { id: "nontan",  callName: "ノンタン",  pedigreeName: "ADOLPH JP TATURA",                    jkc: "HU-00576/25",   chip: "",              gender: "オス", birthdate: "2025-01-01", color: "BLACK & WHITE",  breed: "シベリアンハスキー",  fatherId: "runo",   motherId: "kaoru",  note: "なっちゃんの兄妹" },
-  { id: "yomogi",  callName: "よもぎ",    pedigreeName: "FANKY KANAOKA JP YOMOGI",             jkc: "WP-01988/20",   chip: "392144000405691", gender: "メス", birthdate: "2020-03-19", color: "RED & WHITE",    breed: "ウェルシュコーギー", fatherId: "barley", motherId: "sango",  note: "" },
-  { id: "chihiro", callName: "ちひろ",    pedigreeName: "FANKY KANAOKA JP NEVER ENDING STORY", jkc: "WP-02235/21",   chip: "392144000536142", gender: "メス", birthdate: "2021-05-06", color: "RED & WHITE",    breed: "ウェルシュコーギー", fatherId: "barley", motherId: "sakura", note: "" },
-  { id: "alexa",   callName: "アレクサ",  pedigreeName: "MEILLEUR AMI JP AMAZON",              jkc: "WP-00215/23",   chip: "392149002201911", gender: "メス", birthdate: "2022-10-18", color: "RED & WHITE",    breed: "ウェルシュコーギー", fatherId: "prince", motherId: "yomogi", note: "" },
-  { id: "prince",  callName: "プリンス",  pedigreeName: "BALLETCOR PRINCE CHARMING",           jkc: "WP-03885/19-I", chip: "977200009529573", gender: "オス", birthdate: "2018-11-23", color: "TRICOLOUR",      breed: "ウェルシュコーギー", fatherId: null,     motherId: null,     note: "外国産輸入" },
-];
-const EXTERNAL_DATA = [
-  { id: "zeus",   callName: "ゼウス",   breed: "シベリアンハスキー",  gender: "オス", external: true },
-  { id: "kaoru",  callName: "カオル",   breed: "シベリアンハスキー",  gender: "メス", external: true },
-  { id: "ace",    callName: "エース",   breed: "シベリアンハスキー",  gender: "オス", external: true },
-  { id: "ran",    callName: "ラン",     breed: "シベリアンハスキー",  gender: "メス", external: true },
-  { id: "waru",   callName: "ワル",     breed: "シベリアンハスキー",  gender: "オス", external: true },
-  { id: "ares",   callName: "アレス",   breed: "シベリアンハスキー",  gender: "オス", external: true },
-  { id: "anna",   callName: "アンナ",   breed: "シベリアンハスキー",  gender: "メス", external: true },
-  { id: "runo",   callName: "ルノ",     breed: "シベリアンハスキー",  gender: "オス", external: true },
-  { id: "barley", callName: "バーリー", breed: "ウェルシュコーギー",  gender: "オス", external: true },
-  { id: "sango",  callName: "サンゴ",   breed: "ウェルシュコーギー",  gender: "メス", external: true },
-  { id: "sakura", callName: "さくら",   breed: "ウェルシュコーギー",  gender: "メス", external: true },
-  { id: "korleone", callName: "コルレオーネ", breed: "ウェルシュコーギー", gender: "オス", external: true },
+  { id: "d1", name: "ポチ", breed: "柴犬", sex: "♂", birth: "2021-05-10", pedigreeNo: "JKC-12345", note: "毛並み良好" },
+  { id: "d2", name: "ハナ", breed: "柴犬", sex: "♀", birth: "2022-02-15", pedigreeNo: "JKC-67890", note: "性格おとなしい" }
 ];
 
 const HEAT_RECORDS_DATA = [
-  { id: "r_wu1", dogId: "uri",     type: "heat",     date: "2025-08-29", note: "" },
-  { id: "r_wu2", dogId: "uri",     type: "breeding",  date: "2025-09-05", fatherName: "ワル",    fatherId: "waru",     method: "人工交配", status: "不成立", group: "g_wu1", note: "" },
-  { id: "r_wu3", dogId: "uri",     type: "breeding",  date: "2025-09-07", fatherName: "ワル",    fatherId: "waru",     method: "自然交配", status: "不成立", group: "g_wu1", note: "" },
-  { id: "r_au1", dogId: "uri",     type: "breeding",  date: "2025-09-09", fatherName: "アク",   fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au2", dogId: "uri",     type: "breeding",  date: "2025-09-11", fatherName: "アク",   fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au3", dogId: "uri",     type: "breeding",  date: "2025-09-13", fatherName: "アク",   fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au4", dogId: "uri",     type: "breeding",  date: "2025-09-15", fatherName: "アク",   fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au_birth", dogId: "uri", type: "birth",   date: "2025-11-13", fatherName: "アク",   fatherId: "ace",      group: "g_au1", birthMethod: "自然分娩", pregnancyDays: 63, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
-  { id: "r_wu4", dogId: "uri",     type: "heat",     date: "2026-04-27", note: "" },
-  { id: "r_wu5", dogId: "uri",     type: "breeding",  date: "2026-05-04", fatherName: "ワル",    fatherId: "waru",     method: "人工交配", status: "交配中", group: "g_wu2", note: "" },
-  { id: "r_wu6", dogId: "uri",     type: "breeding",  date: "2026-05-05", fatherName: "ワル",    fatherId: "waru",     method: "人工交配", status: "交配中", group: "g_wu2", note: "" },
-  { id: "r_wu7", dogId: "uri",     type: "breeding",  date: "2026-05-08", fatherName: "ワル",    fatherId: "waru",     method: "人工交配", status: "交配中", group: "g_wu2", note: "" },
-  { id: "r_eu1", dogId: "uran",    type: "heat",     date: "2025-08-31", note: "" },
-  { id: "r_eu2", dogId: "uran",    type: "breeding",  date: "2025-09-07", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_eu3", dogId: "uran",    type: "breeding",  date: "2025-09-09", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_eu4", dogId: "uran",    type: "breeding",  date: "2025-09-11", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_eu5", dogId: "uran",    type: "breeding",  date: "2025-09-13", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_eu6", dogId: "uran",    type: "breeding",  date: "2025-09-15", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_nu1", dogId: "uran",    type: "heat",     date: "2026-01-20", note: "" },
-  { id: "r_nu2", dogId: "uran",    type: "breeding",  date: "2026-01-27", fatherName: "ノンタン", fatherId: "nontan",   method: "自然交配", status: "出産済", group: "g_nu1", note: "" },
-  { id: "r_nu3", dogId: "uran",    type: "breeding",  date: "2026-01-29", fatherName: "ノンタン", fatherId: "nontan",   method: "自然交配", status: "出産済", group: "g_nu1", note: "" },
-  { id: "r_nu_birth", dogId: "uran", type: "birth",  date: "2026-03-31", fatherName: "ノンタン", fatherId: "nontan",   group: "g_nu1", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
-  { id: "r_pc1", dogId: "chihiro", type: "heat",     date: "2025-10-07", note: "" },
-  { id: "r_pc2", dogId: "chihiro", type: "breeding",  date: "2025-10-14", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc3", dogId: "chihiro", type: "breeding",  date: "2025-10-16", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc4", dogId: "chihiro", type: "breeding",  date: "2025-10-18", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc5", dogId: "chihiro", type: "breeding",  date: "2025-10-21", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc_birth", dogId: "chihiro", type: "birth", date: "2025-12-16", fatherName: "プリンス", fatherId: "prince", group: "g_pc1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
-  { id: "r_pc6", dogId: "chihiro", type: "heat",     date: "2026-02-17", note: "" },
-  { id: "r_pc7", dogId: "chihiro", type: "breeding",  date: "2026-02-24", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "妊娠中", group: "g_pc2", note: "" },
-  { id: "r_pc8", dogId: "chihiro", type: "breeding",  date: "2026-02-26", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "妊娠中", group: "g_pc2", note: "" },
-  { id: "r_pc9", dogId: "chihiro", type: "breeding",  date: "2026-02-28", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "妊娠中", group: "g_pc2", note: "" },
-  { id: "r_pc10", dogId: "chihiro", type: "breeding", date: "2026-03-02", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "妊娠中", group: "g_pc2", note: "" },
-  { id: "r_pc11", dogId: "chihiro", type: "breeding", date: "2026-03-04", fatherName: "プリンス", fatherId: "prince",   method: "人工交配", status: "妊娠中", group: "g_pc2", note: "" },
-  { id: "r_as1", dogId: "sae",     type: "heat",     date: "2025-10-04", note: "" },
-  { id: "r_as2", dogId: "sae",     type: "breeding",  date: "2025-10-11", fatherName: "アク",   fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_as1", note: "" },
-  { id: "r_as3", dogId: "sae",     type: "breeding",  date: "2025-10-16", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_as1", note: "" },
+  { id: "h1", dogId: "d2", startDate: "2024-01-10", endDate: "2024-01-24", notes: "順調" }
+];
+
+const PUPPIES_DATA = [
+  { id: "p1", motherId: "d2", fatherId: "d1", birthDate: "2024-03-30", count: 3, notes: "オス2、メス1" }
+];
+
+const PRODUCTS_DATA = [
+  { id: "pr1", name: "平飼い有精卵 10個入", price: 500, category: "卵" },
+  { id: "pr2", name: "平飼い有精卵 30個入", price: 1400, category: "卵" },
+  { id: "pr3", name: "種卵 6個入", price: 1200, category: "種卵" }
+];
+
+const CUSTOMERS_DATA = [
+  { id: "c1", name: "山田 太郎", contact: "yamada@example.com", address: "東京都...", note: "定期購入希望" }
+];
+
+const SALES_DATA = [
+  { id: "s1", customerId: "c1", productId: "pr1", date: "2024-04-01", qty: 2, total: 1000, channel: "ストアーズ", note: "初回注文" }
+];
+
+// --- Styles ---
+const S = `
+  :root {
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text2: #64748b;
+    --text3: #94a3b8;
+    --primary: #2563eb;
+    --accent-dog: #d97706;
+    --accent-chicken: #16a34a;
+    --border: #e2e8f0;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+  }
+
+  .app {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .home-hero {
+    margin-bottom: 24px;
+  }
+  .home-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .home-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 4px 0;
+  }
+  .home-title em {
+    font-style: normal;
+    color: var(--primary);
+  }
+  .home-date {
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  .home-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .home-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .home-card:active {
+    transform: scale(0.98);
+  }
+  .home-card-icon {
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-card-icon.dog { background: #fef3c7; }
+  .home-card-icon.chicken { background: #dcfce7; }
+
+  .home-card-info { flex: 1; }
+  .home-card-name { font-weight: 700; font-size: 18px; }
+  .home-card-desc { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* Sub Modules */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .btn-back {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+
+  .card-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .field-row { display: flex; gap: 8px; }
+  .btn-save {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .btn-add {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+`;
+
+// --- Components ---
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <h3>{title}</h3>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function DogModule({ dogs, heatRecords, puppies, onBack }) {
+  const [tab, setTab] = useState("dogs");
+
+  return (
+    <div className="app">
+      <style>{S}</style>
+      <div className="header">
+        <button className="btn-back" onClick={onBack}>← 戻る</button>
+        <h2>🐕 犬の管理</h2>
+      </div>
+
+      <div className="tabs">
+        <button className={`tab ${tab === "dogs" ? "active" : ""}`} onClick={() => setTab("dogs")}>個体一覧</button>
+        <button className={`tab ${tab === "heat" ? "active" : ""}`} onClick={() => setTab("heat")}>ヒート記録</button>
+        <button className={`tab ${tab === "puppies" ? "active" : ""}`} onClick={() => setTab("puppies")}>仔犬記録</button>
+      </div>
+
+      {tab === "dogs" && (
+        <div>
+          {dogs.map(d => (
+            <div key={d.id} className="card-item">
+              <strong>{d.name}</strong> ({d.breed} / {d.sex})
+              <div>生年月日: {d.birth} | 血統書No: {d.pedigreeNo}</div>
+              {d.note && <div style={{ fontSize: 12, color: "#666" }}>{d.note}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "heat" && (
+        <div>
+          {heatRecords.map(h => (
+            <div key={h.id} className="card-item">
+              <div>対象犬ID: {h.dogId}</div>
+              <div>期間: {h.startDate} 〜 {h.endDate}</div>
+              <div>メモ: {h.notes}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "puppies" && (
+        <div>
+          {puppies.map(p => (
+            <div key={p.id} className="card-item">
+              <div>誕生日: {p.birthDate} ({p.count}頭)</div>
+              <div>母: {p.motherId} / 父: {p.fatherId}</div>
+              <div>メモ: {p.notes}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ChickenModule({ onBack }) {
+  const [tab, setTab] = useState("sales");
+  const [products] = useState(PRODUCTS_DATA);
+  const [customers, setCustomers] = useState(CUSTOMERS_DATA);
+  const [sales, setSales] = useState(SALES_DATA);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({});
+
+  const sf = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  return (
+    <div className="app">
+      <style>{S}</style>
+      <div className="header">
+        <button className="btn-back" onClick={onBack}>← 戻る</button>
+        <h2>🐓 鶏の管理</h2>
+      </div>
+
+      <div className="tabs">
+        <button className={`tab ${tab === "sales" ? "active" : ""}`} onClick={() => setTab("sales")}>販売履歴</button>
+        <button className={`tab ${tab === "customers" ? "active" : ""}`} onClick={() => setTab("customers")}>顧客一覧</button>
+      </div>
+
+      {tab === "sales" && (
+        <div>
+          <button className="btn-add" onClick={() => { setForm({ date: todayStr(), qty: 1 }); setModal("sale"); }}>+ 販売を記録</button>
+          {sales.map(s => {
+            const cust = customers.find(c => c.id === s.customerId);
+            const prod = products.find(p => p.id === s.productId);
+            return (
+              <div key={s.id} className="card-item">
+                <div><strong>{cust ? cust.name : "不明"}</strong> ({s.date})</div>
+                <div>{prod ? prod.name : "商品不明"} × {s.qty} = ¥{s.total}</div>
+                <div style={{ fontSize: 12, color: "#666" }}>チャネル: {s.channel} | メモ: {s.note}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {tab === "customers" && (
+        <div>
+          <button className="btn-add" onClick={() => { setForm({}); setModal("customer"); }}>+ 顧客を登録</button>
+          {customers.map(c => (
+            <div key={c.id} className="card-item">
+              <strong>{c.name}</strong>
+              <div>連絡先: {c.contact}</div>
+              <div>住所: {c.address}</div>
+              {c.note && <div style={{ fontSize: 12, color: "#666" }}>{c.note}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {modal === "sale" && (
+        <Modal title="🛒 販売を記録" onClose={() => setModal(null)}>
+          <div className="field">
+            <label>顧客</label>
+            <select value={form.customerId || ""} onChange={e => sf("customerId", e.target.value)}>
+              <option value="">選択してください</option>
+              {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label>商品</label>
+            <select value={form.productId || ""} onChange={e => sf("productId", e.target.value)}>
+              <option value="">選択してください</option>
+              {products.map(p => <option key={p.id} value={p.id}>{p.name} (¥{p.price})</option>)}
+            </select>
+          </div>
+          <div className="field-row">
+            <div className="field"><label>日付</label><input type="date" value={form.date || ""} onChange={e => sf("date", e.target.value)} /></div>
+            <div className="field"><label>数量</label><input type="number" value={form.qty || 1} onChange={e => sf("qty", parseInt(e.target.value) || 1)} /></div>
+          </div>
+          <div className="field">
+            <label>販売チャネル</label>
+            <select value={form.channel || "ストアーズ"} onChange={e => sf("channel", e.target.value)}>
+              <option>ストアーズ</option>
+              <option>直売</option>
+              <option>その他</option>
+            </select>
+          </div>
+          <div className="field"><label>メモ</label><textarea value={form.note || ""} onChange={e => sf("note", e.target.value)} /></div>
+          <button className="btn-save" onClick={() => {
+            if (!form.customerId || !form.productId || !form.date) return;
+            const pr = products.find(p => p.id === form.productId);
+            const total = (pr ? pr.price : 0) * (form.qty || 1);
+            setSales(ss => [...ss, {
+              id: `s${Date.now()}`,
+              customerId: form.customerId,
+              productId: form.productId,
+              date: form.date,
+              qty: form.qty || 1,
+              total,
+              channel: form.channel || "ストアーズ",
+              note: form.note || ""
+            }]);
+            setModal(null);
+          }}>記録する</button>
+        </Modal>
+      )}
+
+      {modal === "customer" && (
+        <Modal title="👤 顧客を登録" onClose={() => setModal(null)}>
+          <div className="field"><label>お名前</label><input value={form.name || ""} onChange={e => sf("name", e.target.value)} placeholder="例: 山田 太郎" /></div>
+          <div className="field"><label>連絡先 (メール/電話)</label><input value={form.contact || ""} onChange={e => sf("contact", e.target.value)} /></div>
+          <div className="field"><label>住所</label><input value={form.address || ""} onChange={e => sf("address", e.target.value)} /></div>
+          <div className="field"><label>メモ</label><textarea value={form.note || ""} onChange={e => sf("note", e.target.value)} /></div>
+          <button className="btn-save" onClick={() => {
+            if (!form.name) return;
+            setCustomers(cs => [...cs, {
+              id: `c${Date.now()}`,
+              name: form.name,
+              contact: form.contact || "",
+              address: form.address || "",
+              note: form.note || ""
+            }]);
+            setModal(null);
+          }}>登録する</button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// MAIN ROOT APP
+// ============================================================
+export default function App() {
+  const [view, setView] = useState("home"); // "home" | "dog" | "chicken"
+  const [dogs] = useState(DOGS_DATA);
+  const [heatRecords, setHeatRecords] = useState(HEAT_RECORDS_DATA);
+  const [puppies, setPuppies] = useState(PUPPIES_DATA);
+
+  if (view === "dog") {
+    return (
+      <DogModule
+        dogs={dogs}
+        heatRecords={heatRecords}
+        setHeatRecords={setHeatRecords}
+        puppies={puppies}
+        setPuppies={setPuppies}
+        onBack={() => setView("home")}
+      />
+    );
+  }
+
+  if (view === "chicken") {
+    return <ChickenModule onBack={() => setView("home")} />;
+  }
+
+  return (
+    <div className="app">
+      <style>{S}</style>
+      <div className="home-hero">
+        <div className="home-eyebrow">Kennel & Poultry Management</div>
+        <div className="home-title">ブリーダー<em>管理</em></div>
+        <div className="home-date">{todayStr().replace(/-/g, ".")}</div>
+      </div>
+
+      <div className="home-cards">
+        <div className="home-card dog" onClick={() => setView("dog")}>
+          <div className="home-card-icon dog">🐕</div>
+          <div className="home-card-info">
+            <div className="home-card-name">犬の管理</div>
+            <div className="home-card-desc">血統書・交配履歴・ヒート・仔犬記録</div>
+          </div>
+          <span style={{ color: "var(--text3)", fontSize: 18 }}>›</span>
+        </div>
+
+        <div className="home-card chicken" onClick={() => setView("chicken")}>
+          <div className="home-card-icon chicken">🐓</div>
+          <div className="home-card-info">
+            <div className="home-card-name">鶏の管理</div>
+            <div className="home-card-desc">群れ羽数・産卵・孵化・顧客・販売</div>
+          </div>
+          <span style={{ color: "var(--text3)", fontSize: 18 }}>›</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+e",     type: "breeding",  date: "2025-10-16", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_as1", note: "" },
   { id: "r_as4", dogId: "sae",     type: "breeding",  date: "2025-10-20", fatherName: "エース",  fatherId: "ace",      method: "自然交配", status: "出産済", group: "g_as1", note: "" },
   { id: "r_as_birth", dogId: "sae", type: "birth",   date: "2025-12-21", fatherName: "エース",  fatherId: "ace",      group: "g_as1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 5, malePups: 1, femalePups: 4, stillborn: 1, note: "" },
   { id: "r_ns1", dogId: "sae",     type: "heat",     date: "2026-04-21", note: "" },
