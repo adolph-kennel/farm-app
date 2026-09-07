@@ -281,6 +281,185 @@ export default function App() {
                       {status === "交配中" && <span className="badge breeding">交配中</span>}
                     </div>
                   </div>
+              #6b6454;
+  --pink:#d4789e;--pink-dim:rgba(212,120,158,0.12);
+  --blue:#5b8fc9;--blue-dim:rgba(91,143,201,0.12);
+  --green:#50b478;--green-dim:rgba(80,180,120,0.12);
+  --corgi:#c97b3a;--corgi-dim:rgba(201,123,58,0.12);
+  --r:14px;--r-sm:8px;
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.hdr{padding:14px 20px 12px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px}
+.hdr-back{background:none;border:none;color:var(--text2);cursor:pointer;display:flex;align-items:center;padding:4px;border-radius:8px;flex-shrink:0;font-size:20px}
+.hdr-title{font-size:16px;font-weight:700}
+.hdr-sub{font-size:10px;color:var(--text3)}
+.home-hero{padding:28px 20px 20px;background:linear-gradient(160deg,var(--surface2),var(--surface));border-bottom:1px solid var(--border)}
+.home-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.home-title{font-size:24px;line-height:1.25;font-weight:900}
+.home-cards{padding:16px 20px;display:flex;flex-direction:column;gap:12px;padding-bottom:40px}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:16px}
+.home-card.dog{border-left:4px solid var(--blue)}
+.home-card.heat{border-left:4px solid var(--pink)}
+.home-card.chicken{border-left:4px solid var(--green)}
+.home-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.home-card-icon.dog{background:var(--blue-dim)}
+.home-card-icon.heat{background:var(--pink-dim)}
+.home-card-icon.chicken{background:var(--green-dim)}
+.home-card-name{font-size:17px;font-weight:700}
+.home-card-desc{font-size:12px;color:var(--text3);margin-top:3px}
+.dog-list{padding:12px 20px;display:flex;flex-direction:column;gap:9px;padding-bottom:100px}
+.dog-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.dog-card.husky{border-left:3px solid var(--blue)}
+.dog-card.corgi{border-left:3px solid var(--corgi)}
+.dog-av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dog-av.husky{background:var(--blue-dim)}
+.dog-av.corgi{background:var(--corgi-dim)}
+.dog-callname{font-size:15px;font-weight:700}
+.dog-badges{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.badge.female{background:rgba(212,120,158,0.2);color:var(--pink)}
+.badge.male{background:var(--blue-dim);color:var(--blue)}
+.badge.heat{background:var(--pink);color:#fff}
+.badge.pregnant{background:var(--gold);color:#000}
+.badge.breeding{background:var(--blue);color:#fff}
+.detail-hero{padding:18px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.detail-name{font-size:24px;font-weight:900}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin:12px 20px 0;padding:14px 16px}
+.info-card-title{font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:11px}
+.heat-item{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px;margin-bottom:8px}
+.fab-wrap{position:fixed;bottom:26px;right:22px;display:flex;flex-direction:column;gap:9px;align-items:flex-end;z-index:150}
+.fab{width:54px;height:54px;border-radius:15px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,168,76,0.35);font-size:22px;font-weight:bold}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:flex-end}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);padding:18px 20px 40px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--gold2)}
+.field{margin-bottom:13px}
+.field label{font-size:11px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:var(--surface2);color:var(--text);outline:none}
+.btn-save{width:100%;padding:12px;border-radius:10px;border:none;background:var(--gold);color:var(--bg);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:5px}
+.btn-cancel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border2);background:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;margin-top:7px;color:var(--text3)}
+`;
+
+// ============================================================
+// SHARED COMPONENTS
+// ============================================================
+function Hdr({ title, sub, onBack }) {
+  return (
+    <div className="hdr">
+      {onBack && <button className="hdr-back" onClick={onBack}>←</button>}
+      <div><div className="hdr-title">{title}</div>{sub && <div className="hdr-sub">{sub}</div>}</div>
+    </div>
+  );
+}
+
+function Modal({ title, onClose, children }) {
+  return (
+    <div className="overlay" onClick={e => e.target.className === "overlay" && onClose()}>
+      <div className="modal">
+        <div className="modal-title">{title}</div>
+        {children}
+        <button className="btn-cancel" onClick={onClose}>キャンセル</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MAIN APP COMPONENT
+// ============================================================
+export default function App() {
+  const [view, setView] = useState("home"); // home, dogs, heat, dog_detail
+  const [dogs, setDogs] = useState(INITIAL_DOGS);
+  const [heatRecords, setHeatRecords] = useState(INITIAL_HEAT_RECORDS);
+  const [selectedDog, setSelectedDog] = useState(null);
+  const [showAddDogModal, setShowAddDogModal] = useState(false);
+  const [showAddHeatModal, setShowAddHeatModal] = useState(false);
+
+  // 犬の登録フォームの入力状態
+  const [dogForm, setDogForm] = useState({ callName: "", gender: "メス", breed: "ハスキー", pedigreeName: "", birthdate: "" });
+  // ヒート記録フォームの入力状態
+  const [heatForm, setHeatForm] = useState({ dogId: "", type: "heat", date: todayStr(), fatherName: "", note: "" });
+
+  const breeds = ["ハスキー", "コーギー"];
+
+  // 最新のステータス判定
+  const getDogStatus = (dogId) => {
+    const recs = heatRecords.filter(r => r.dogId === dogId).sort((a,b) => b.date.localeCompare(a.date));
+    if (recs.length === 0) return null;
+    const latest = recs[0];
+    if (latest.type === "breeding" && latest.status === "妊娠中") return "妊娠中";
+    if (latest.type === "breeding" && latest.status === "交配中") return "交配中";
+    if (latest.type === "heat") return "ヒート中";
+    return null;
+  };
+
+  // 犬の追加処理
+  const handleSaveDog = () => {
+    if (!dogForm.callName) return alert("名前を入力してください");
+    const newDog = { ...dogForm, id: "dog_" + Date.now() };
+    setDogs([...dogs, newDog]);
+    setShowAddDogModal(false);
+    setDogForm({ callName: "", gender: "メス", breed: "ハスキー", pedigreeName: "", birthdate: "" });
+  };
+
+  // ヒート・交配記録の追加処理
+  const handleSaveHeat = () => {
+    if (!heatForm.dogId) return alert("犬を選択してください");
+    const newRec = { ...heatForm, id: "r_" + Date.now() };
+    setHeatRecords([...heatRecords, newRec]);
+    setShowAddHeatModal(false);
+    setHeatForm({ dogId: "", type: "heat", date: todayStr(), fatherName: "", note: "" });
+  };
+
+  return (
+    <div className="app">
+      <style>{S}</style>
+
+      {/* ホーム画面 */}
+      {view === "home" && (
+        <>
+          <div className="home-hero">
+            <div className="home-eyebrow">Breeding Management</div>
+            <div className="home-title">ブリーダー管理アプリ</div>
+          </div>
+          <div className="home-cards">
+            <div className="home-card dog" onClick={() => setView("dogs")}>
+              <div className="home-card-icon dog">🐶</div>
+              <div>
+                <div className="home-card-name">愛犬一覧</div>
+                <div className="home-card-desc">ハスキー・コーギーの台帳</div>
+              </div>
+            </div>
+            <div className="home-card heat" onClick={() => setView("heat")}>
+              <div className="home-card-icon heat">🔥</div>
+              <div>
+                <div className="home-card-name">ヒート・交配管理</div>
+                <div className="home-card-desc">発情周期・交配・出産の記録</div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 犬一覧画面 */}
+      {view === "dogs" && (
+        <>
+          <Hdr title="愛犬一覧" onBack={() => setView("home")} />
+          <div className="dog-list">
+            {dogs.map(dog => {
+              const status = getDogStatus(dog.id);
+              return (
+                <div key={dog.id} className={`dog-card ${dog.breed === "ハスキー" ? "husky" : "corgi"}`} onClick={() => { setSelectedDog(dog); setView("dog_detail"); }}>
+                  <div className={`dog-av ${dog.breed === "ハスキー" ? "husky" : "corgi"}`}>🐶</div>
+                  <div style={{ flex: 1 }}>
+                    <div className="dog-callname">{dog.callName}</div>
+                    <div className="dog-badges">
+                      <span className={`badge ${dog.gender === "メス" ? "female" : "male"}`}>{dog.gender}</span>
+                      {dog.birthdate && <span className="badge age">{getAge(dog.birthdate)}</span>}
+                      {status === "妊娠中" && <span className="badge pregnant">妊娠中</span>}
+                      {status === "交配中" && <span className="badge breeding">交配中</span>}
+                    </div>
+                  </div>
               ];
 
 // ============================================================
