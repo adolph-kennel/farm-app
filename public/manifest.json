@@ -1,0 +1,8 @@
+{
+  "short_name": "ファーム管理",
+  "name": "わんこと鶏の管理帳",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
