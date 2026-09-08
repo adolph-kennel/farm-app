@@ -1,8 +1,9 @@
 {
   "short_name": "ファーム管理",
-  "name": "わんこと鶏の管理帳",
-  "start_url": "/",
+  "name": "ファーム管理アプリ",
+  "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#0f0e0c",
+  "theme_color": "#0f0e0c",
+  "orientation": "portrait"
 }
