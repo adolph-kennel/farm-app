@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwls4gI2ZrqEZZFDVE1GiDypZDCVqZler1RXHvauEdzCYz7t9q4v5EUJgCSwQox9aqB/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx6HgpIAsNOMtI0aeSyxYaXyNgpXaeZcWCVm8RLkNcncMjq_6KIR5Dabkihan_ZzoL0/exec";
 
 // ============================================================
 // DOG DATA
