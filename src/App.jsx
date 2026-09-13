@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwls4gI2ZrqEZZFDVE1GiDypZDCVqZler1RXHvauEdzCYz7t9q4v5EUJgCSwQox9aqB/exec";
 
 // ============================================================
 // DOG DATA
@@ -39,70 +41,30 @@ const EXTERNAL_DATA = [
 const HEAT_RECORDS_DATA = [
   { id: "r_wu1", dogId: "uri",     type: "heat",     date: "2025-08-29", note: "" },
   { id: "r_wu2", dogId: "uri",     type: "breeding",  date: "2025-09-05", fatherName: "ワル",    method: "人工交配", status: "不成立", group: "g_wu1", note: "" },
-  { id: "r_wu3", dogId: "uri",     type: "breeding",  date: "2025-09-07", fatherName: "ワル",    method: "自然交配", status: "不成立", group: "g_wu1", note: "" },
   { id: "r_au1", dogId: "uri",     type: "breeding",  date: "2025-09-09", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au2", dogId: "uri",     type: "breeding",  date: "2025-09-11", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au3", dogId: "uri",     type: "breeding",  date: "2025-09-13", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au4", dogId: "uri",     type: "breeding",  date: "2025-09-15", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_au1", note: "" },
   { id: "r_au_birth", dogId: "uri", type: "birth",   date: "2025-11-13", fatherName: "アク",   group: "g_au1", birthMethod: "自然分娩", pregnancyDays: 63, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
   { id: "r_eu1", dogId: "uran",    type: "heat",     date: "2025-08-31", note: "" },
-  { id: "r_eu2", dogId: "uran",    type: "breeding",  date: "2025-09-07", fatherName: "エース",  method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
-  { id: "r_eu3", dogId: "uran",    type: "breeding",  date: "2025-09-09", fatherName: "エース",  method: "自然交配", status: "不成立", group: "g_eu1", note: "" },
   { id: "r_nu1", dogId: "uran",    type: "heat",     date: "2026-01-20", note: "" },
   { id: "r_nu2", dogId: "uran",    type: "breeding",  date: "2026-01-27", fatherName: "ノンタン", method: "自然交配", status: "出産済", group: "g_nu1", note: "" },
-  { id: "r_nu3", dogId: "uran",    type: "breeding",  date: "2026-01-29", fatherName: "ノンタン", method: "自然交配", status: "出産済", group: "g_nu1", note: "" },
   { id: "r_nu_birth", dogId: "uran", type: "birth",  date: "2026-03-31", fatherName: "ノンタン", group: "g_nu1", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
   { id: "r_pc1", dogId: "chihiro", type: "heat",     date: "2025-10-07", note: "" },
   { id: "r_pc2", dogId: "chihiro", type: "breeding",  date: "2025-10-14", fatherName: "プリンス", method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc3", dogId: "chihiro", type: "breeding",  date: "2025-10-16", fatherName: "プリンス", method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
   { id: "r_pc_birth", dogId: "chihiro", type: "birth", date: "2025-12-16", fatherName: "プリンス", group: "g_pc1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
   { id: "r_as1", dogId: "sae",     type: "heat",     date: "2025-10-04", note: "" },
-  { id: "r_as2", dogId: "sae",     type: "breeding",  date: "2025-10-11", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_as1", note: "" },
-  { id: "r_as3", dogId: "sae",     type: "breeding",  date: "2025-10-16", fatherName: "エース",  method: "自然交配", status: "出産済", group: "g_as1", note: "" },
   { id: "r_as_birth", dogId: "sae", type: "birth",   date: "2025-12-21", fatherName: "エース",  group: "g_as1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 5, malePups: 1, femalePups: 4, stillborn: 1, note: "" },
   { id: "r_an1", dogId: "nacchan", type: "heat",     date: "2025-10-31", note: "初産" },
-  { id: "r_an2", dogId: "nacchan", type: "breeding",  date: "2025-11-07", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_an1", note: "" },
   { id: "r_an_birth", dogId: "nacchan", type: "birth", date: "2026-01-11", fatherName: "アク", group: "g_an1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 7, malePups: 2, femalePups: 5, stillborn: 0, note: "なっちゃんは初産" },
   { id: "r_py1", dogId: "yomogi",  type: "heat",     date: "2026-02-12", note: "" },
-  { id: "r_py2", dogId: "yomogi",  type: "breeding",  date: "2026-02-15", fatherName: "プリンス", method: "人工交配", status: "出産済", group: "g_py1", note: "" },
   { id: "r_py_birth", dogId: "yomogi", type: "birth", date: "2026-04-25", fatherName: "プリンス", group: "g_py1", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 9, malePups: 1, femalePups: 1, stillborn: null, note: "" },
   { id: "r_ca1", dogId: "alexa",   type: "heat",     date: "2026-01-30", note: "" },
-  { id: "r_ca2", dogId: "alexa",   type: "breeding",  date: "2026-02-05", fatherName: "コルレオーネ", method: "人工交配", status: "出産済", group: "g_ca1", note: "" },
   { id: "r_ca_birth", dogId: "alexa", type: "birth", date: "2026-04-09", fatherName: "コルレオーネ", group: "g_ca1", birthMethod: "帝王切開", pregnancyDays: 63, totalPups: 9, malePups: 3, femalePups: 6, stillborn: 0, note: "" },
 ];
 
 const PUPPIES_DATA = [
-  { id: "p_au1", birthId: "r_au_birth", no: 1, gender: "オス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au2", birthId: "r_au_birth", no: 2, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au3", birthId: "r_au_birth", no: 3, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au4", birthId: "r_au_birth", no: 4, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_nu1", birthId: "r_nu_birth", no: 1, gender: "オス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_nu2", birthId: "r_nu_birth", no: 2, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_nu3", birthId: "r_nu_birth", no: 3, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_nu4", birthId: "r_nu_birth", no: 4, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_as1", birthId: "r_as_birth", no: 1, gender: "オス",  color: "SILVER & WHITE", eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_as2", birthId: "r_as_birth", no: 2, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_as3", birthId: "r_as_birth", no: 3, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_as4", birthId: "r_as_birth", no: 4, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_as5", birthId: "r_as_birth", no: 5, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "白リボン", birthWeight: "", name: "", chip: "", note: "死産" },
-  { id: "p_an1", birthId: "r_an_birth", no: 1, gender: "オス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an2", birthId: "r_an_birth", no: 2, gender: "オス",  color: "SILVER & WHITE", eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an3", birthId: "r_an_birth", no: 3, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an4", birthId: "r_an_birth", no: 4, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an5", birthId: "r_an_birth", no: 5, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "白リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an6", birthId: "r_an_birth", no: 6, gender: "メス",  color: "SILVER & WHITE", eyeColor: "", identifier: "紫リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_an7", birthId: "r_an_birth", no: 7, gender: "メス",  color: "BLACK & WHITE",  eyeColor: "", identifier: "橙リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca1", birthId: "r_ca_birth", no: 1, gender: "オス",  color: "RED & WHITE",    eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca2", birthId: "r_ca_birth", no: 2, gender: "オス",  color: "RED & WHITE",    eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca3", birthId: "r_ca_birth", no: 3, gender: "オス",  color: "TRICOLOUR",      eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca4", birthId: "r_ca_birth", no: 4, gender: "メス",  color: "RED & WHITE",    eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca5", birthId: "r_ca_birth", no: 5, gender: "メス",  color: "RED & WHITE",    eyeColor: "", identifier: "白リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca6", birthId: "r_ca_birth", no: 6, gender: "メス",  color: "TRICOLOUR",      eyeColor: "", identifier: "紫リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca7", birthId: "r_ca_birth", no: 7, gender: "メス",  color: "RED & WHITE",    eyeColor: "", identifier: "橙リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca8", birthId: "r_ca_birth", no: 8, gender: "メス",  color: "RED & WHITE",    eyeColor: "", identifier: "桃リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_ca9", birthId: "r_ca_birth", no: 9, gender: "メス",  color: "TRICOLOUR",      eyeColor: "", identifier: "黒リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_py1", birthId: "r_py_birth", no: 1, gender: "オス",  color: "RED & WHITE",    eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_py2", birthId: "r_py_birth", no: 2, gender: "メス",  color: "RED & WHITE",    eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au1", birthId: "r_au_birth", no: 1, gender: "オス", color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au2", birthId: "r_au_birth", no: 2, gender: "メス", color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au3", birthId: "r_au_birth", no: 3, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au4", birthId: "r_au_birth", no: 4, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
 ];
 
 // ============================================================
@@ -139,7 +101,7 @@ const INITIAL_SALES = [
 // UTILS
 // ============================================================
 const todayStr = () => new Date().toISOString().slice(0, 10);
-const formatDate = (d) => d ? d.replace(/-/g, "/") : "－";
+const formatDate = (d) => d ? String(d).replace(/-/g, "/") : "－";
 const getAge = (b) => {
   if (!b) return "";
   const diff = (new Date() - new Date(b)) / (1000 * 60 * 60 * 24 * 30.5);
@@ -148,7 +110,6 @@ const getAge = (b) => {
 };
 const nextHeatEst = (d) => { if (!d) return null; const dt = new Date(d); dt.setDate(dt.getDate() + 180); return dt.toISOString().slice(0, 10); };
 const daysDiff = (a, b = todayStr()) => !a ? null : Math.round((new Date(b) - new Date(a)) / 86400000);
-const calcDueDate = (dateStr, days) => { if (!dateStr) return null; const d = new Date(dateStr); d.setDate(d.getDate() + days); return d.toISOString().slice(0, 10); };
 
 const STATUS_COLOR = {
   "交配中": { bg: "rgba(91,143,201,0.15)",  text: "#5b8fc9", border: "rgba(91,143,201,0.4)" },
@@ -176,7 +137,7 @@ const S = `
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0e0c;--surface:#1a1815;--surface2:#232018;--surface3:#2a2620;
+  --bg:#0f0e0c;--surface:#1a1815;--surface2:#232018;
   --border:#2e2b24;--border2:#3d3930;
   --gold:#c9a84c;--gold2:#e8c97a;--gold-dim:rgba(201,168,76,0.12);
   --text:#f0ead8;--text2:#a09880;--text3:#6b6454;
@@ -196,7 +157,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .home-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
 .home-title{font-family:'Playfair Display',serif;font-size:26px;line-height:1.25}
 .home-title em{font-style:italic;color:var(--gold2)}
-.home-cards{padding:16px 20px;display:flex;flex-direction:column;gap:12px;padding-bottom:40px}
+.home-cards{padding:16px 20px;display:flex;flex-direction:column;gap:12px;padding-bottom:16px}
 .home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:16px}
 .home-card.dog{border-left:4px solid var(--blue)}
 .home-card.chicken{border-left:4px solid var(--green)}
@@ -316,7 +277,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
 .stat-num{font-size:20px;font-weight:900;font-family:'DM Mono',monospace}
 .egg-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
-.sale-amt{font-family:'DM Mono',monospace;font-weight:700;color:var(--green)}
+.sync-btn{width:100%;padding:13px;border-radius:var(--r);border:1px solid rgba(201,168,76,0.4);background:var(--gold-dim);color:var(--gold);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.sync-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:5px}
 `;
 
 // ============================================================
@@ -990,7 +952,6 @@ function ChickenModule({ onBack }) {
           <button className="btn-save" onClick={() => { setFlocks(fs => fs.map(f => f.id===form.id?{...f,breed:form.breed,male:form.male,female:form.female}:f)); setModal(null); }}>保存する</button>
         </Modal>
       )}
-      {modal === "addFlockFab" || null}
       {modal === "egg" && (
         <Modal title="🥚 産卵を記録" onClose={() => setModal(null)}>
           <div className="field"><label>群れ</label><select value={form.flockId||""} onChange={e => sf("flockId",e.target.value)}>{flocks.map(f => <option key={f.id} value={f.id}>{f.breed}</option>)}</select></div>
@@ -1079,16 +1040,53 @@ function ChickenModule({ onBack }) {
 }
 
 // ============================================================
-// HOME
+// HOME (with Google Sheets sync)
 // ============================================================
 export default function App() {
   const [dogs, setDogs] = useState(INITIAL_DOGS);
   const [heatRecords, setHeatRecords] = useState(HEAT_RECORDS_DATA);
   const [puppies, setPuppies] = useState(PUPPIES_DATA);
+  const [flocksState, setFlocksState] = useState(INITIAL_FLOCKS);
   const [screen, setScreen] = useState("home");
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [loadStatus, setLoadStatus] = useState(null);
 
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}`;
+
+  const saveToSheets = async () => {
+    setSyncStatus("saving");
+    try {
+      const payload = { dogs, heatRecords, puppies, flocks: flocksState };
+      const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "saveAll", payload }) });
+      const data = await res.json();
+      setSyncStatus(data.success ? "saved" : "error");
+    } catch (err) {
+      setSyncStatus("error");
+    }
+    setTimeout(() => setSyncStatus(null), 3000);
+  };
+
+  const loadFromSheets = async () => {
+    setLoadStatus("loading");
+    try {
+      const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "loadAll" }) });
+      const data = await res.json();
+      if (data.success) {
+        if (data.dogs && data.dogs.length) setDogs(data.dogs);
+        if (data.heatRecords && data.heatRecords.length) setHeatRecords(data.heatRecords);
+        if (data.puppies && data.puppies.length) setPuppies(data.puppies);
+        if (data.flocks && data.flocks.length) setFlocksState(data.flocks);
+        setLoadStatus("loaded");
+      } else setLoadStatus("error");
+    } catch (err) {
+      setLoadStatus("error");
+    }
+    setTimeout(() => setLoadStatus(null), 3000);
+  };
+
+  const syncLabel = { saving: "⏳ 保存中...", saved: "✅ 保存完了！", error: "❌ エラー" };
+  const loadLabel = { loading: "⏳ 読み込み中...", loaded: "✅ 読み込み完了！", error: "❌ エラー" };
 
   if (screen === "dogs") return <><style>{S}</style><DogModule dogs={dogs} setDogs={setDogs} heatRecords={heatRecords} setHeatRecords={setHeatRecords} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen("home")} /></>;
   if (screen === "chickens") return <><style>{S}</style><ChickenModule onBack={() => setScreen("home")} /></>;
@@ -1113,6 +1111,14 @@ export default function App() {
           <div><div className="home-card-name">鶏の管理</div><div className="home-card-desc">群れ・産卵・孵化・入荷・販売・顧客</div></div>
           <span style={{color:"var(--text3)",fontSize:22,marginLeft:"auto"}}>›</span>
         </div>
+        <button className="sync-btn" onClick={saveToSheets} disabled={syncStatus==="saving"}>
+          {syncStatus ? syncLabel[syncStatus] : "📊 スプレッドシートに保存"}
+        </button>
+        <div className="sync-hint">今の入力内容をGoogleスプレッドシートに保存します</div>
+        <button className="sync-btn" onClick={loadFromSheets} disabled={loadStatus==="loading"} style={{marginTop:4}}>
+          {loadStatus ? loadLabel[loadStatus] : "📥 スプレッドシートから読み込む"}
+        </button>
+        <div className="sync-hint">前回保存したデータを読み込みます</div>
       </div>
     </div>
   );
