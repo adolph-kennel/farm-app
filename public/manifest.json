@@ -1,7 +1,13 @@
 {
   "short_name": "ファーム管理",
   "name": "ファーム管理アプリ",
-  "icons": [],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0f0e0c",
