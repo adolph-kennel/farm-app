@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbx6HgpIAsNOMtI0aeSyxYaXyNgpXaeZcWCVm8RLkNcncMjq_6KIR5Dabkihan_ZzoL0/exec";
 
 // ============================================================
-// DOG DATA (初期値 — スプレッドシートに保存があればそちらを優先)
+// DOG DATA
 // ============================================================
 const INITIAL_DOGS = [
   { id: "uri",     callName: "ウリ",      pedigreeName: "ADOLPH JP KALI",                      jkc: "HU-01349/23",   chip: "",              gender: "メス", birthdate: "2023-05-20", color: "BLACK & WHITE",  breed: "ハスキー",  fatherId: "zeus",   motherId: "kaoru",  note: "" },
@@ -38,33 +38,71 @@ const EXTERNAL_DATA = [
   { id: "korleone", callName: "コルレオーネ", breed: "コーギー", gender: "オス", external: true },
 ];
 
-const HEAT_RECORDS_DATA = [
-  { id: "r_wu1", dogId: "uri",     type: "heat",     date: "2025-08-29", note: "" },
-  { id: "r_wu2", dogId: "uri",     type: "breeding",  date: "2025-09-05", fatherName: "ワル",    method: "人工交配", status: "不成立", group: "g_wu1", note: "" },
-  { id: "r_au1", dogId: "uri",     type: "breeding",  date: "2025-09-09", fatherName: "アク",   method: "自然交配", status: "出産済", group: "g_au1", note: "" },
-  { id: "r_au_birth", dogId: "uri", type: "birth",   date: "2025-11-13", fatherName: "アク",   group: "g_au1", birthMethod: "自然分娩", pregnancyDays: 63, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
-  { id: "r_eu1", dogId: "uran",    type: "heat",     date: "2025-08-31", note: "" },
-  { id: "r_nu1", dogId: "uran",    type: "heat",     date: "2026-01-20", note: "" },
-  { id: "r_nu2", dogId: "uran",    type: "breeding",  date: "2026-01-27", fatherName: "ノンタン", method: "自然交配", status: "出産済", group: "g_nu1", note: "" },
-  { id: "r_nu_birth", dogId: "uran", type: "birth",  date: "2026-03-31", fatherName: "ノンタン", group: "g_nu1", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
-  { id: "r_pc1", dogId: "chihiro", type: "heat",     date: "2025-10-07", note: "" },
-  { id: "r_pc2", dogId: "chihiro", type: "breeding",  date: "2025-10-14", fatherName: "プリンス", method: "人工交配", status: "出産済", group: "g_pc1", note: "" },
-  { id: "r_pc_birth", dogId: "chihiro", type: "birth", date: "2025-12-16", fatherName: "プリンス", group: "g_pc1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
-  { id: "r_as1", dogId: "sae",     type: "heat",     date: "2025-10-04", note: "" },
-  { id: "r_as_birth", dogId: "sae", type: "birth",   date: "2025-12-21", fatherName: "エース",  group: "g_as1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 5, malePups: 1, femalePups: 4, stillborn: 1, note: "" },
-  { id: "r_an1", dogId: "nacchan", type: "heat",     date: "2025-10-31", note: "初産" },
-  { id: "r_an_birth", dogId: "nacchan", type: "birth", date: "2026-01-11", fatherName: "アク", group: "g_an1", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 7, malePups: 2, femalePups: 5, stillborn: 0, note: "なっちゃんは初産" },
-  { id: "r_py1", dogId: "yomogi",  type: "heat",     date: "2026-02-12", note: "" },
-  { id: "r_py_birth", dogId: "yomogi", type: "birth", date: "2026-04-25", fatherName: "プリンス", group: "g_py1", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 9, malePups: 1, femalePups: 1, stillborn: null, note: "" },
-  { id: "r_ca1", dogId: "alexa",   type: "heat",     date: "2026-01-30", note: "" },
-  { id: "r_ca_birth", dogId: "alexa", type: "birth", date: "2026-04-09", fatherName: "コルレオーネ", group: "g_ca1", birthMethod: "帝王切開", pregnancyDays: 63, totalPups: 9, malePups: 3, femalePups: 6, stillborn: 0, note: "" },
+// ============================================================
+// CYCLE DATA（ヒート→交配→結果を1つにまとめた単位）
+// ============================================================
+const CYCLES_DATA = [
+  { id: "c_uri_1", dogId: "uri", heatDate: "2025-08-29",
+    matings: [{ id: "m1", date: "2025-09-05", method: "人工交配" }, { id: "m2", date: "2025-09-07", method: "自然交配" }],
+    fatherName: "ワル", status: "非受胎",
+    birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+  { id: "c_uri_2", dogId: "uri", heatDate: null,
+    matings: [{ id: "m3", date: "2025-09-09", method: "自然交配" }, { id: "m4", date: "2025-09-11", method: "自然交配" }, { id: "m5", date: "2025-09-13", method: "自然交配" }, { id: "m6", date: "2025-09-15", method: "自然交配" }],
+    fatherName: "アク", status: "出産済",
+    birthDate: "2025-11-13", birthMethod: "自然分娩", pregnancyDays: 63, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
+  { id: "c_uri_3", dogId: "uri", heatDate: "2026-04-27",
+    matings: [{ id: "m7", date: "2026-05-04", method: "人工交配" }, { id: "m8", date: "2026-05-05", method: "人工交配" }, { id: "m9", date: "2026-05-08", method: "人工交配" }],
+    fatherName: "ワル", status: "交配中",
+    birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+
+  { id: "c_uran_1", dogId: "uran", heatDate: "2025-08-31",
+    matings: [{ id: "m10", date: "2025-09-07", method: "自然交配" }],
+    fatherName: "エース", status: "非受胎",
+    birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+  { id: "c_uran_2", dogId: "uran", heatDate: "2026-01-20",
+    matings: [{ id: "m11", date: "2026-01-27", method: "自然交配" }, { id: "m12", date: "2026-01-29", method: "自然交配" }],
+    fatherName: "ノンタン", status: "出産済",
+    birthDate: "2026-03-31", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 4, malePups: 1, femalePups: 3, stillborn: 0, note: "" },
+
+  { id: "c_chihiro_1", dogId: "chihiro", heatDate: "2025-10-07",
+    matings: [{ id: "m13", date: "2025-10-14", method: "人工交配" }],
+    fatherName: "プリンス", status: "出産済",
+    birthDate: "2025-12-16", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+  { id: "c_chihiro_2", dogId: "chihiro", heatDate: "2026-02-17",
+    matings: [{ id: "m14", date: "2026-02-24", method: "人工交配" }, { id: "m15", date: "2026-02-26", method: "人工交配" }, { id: "m16", date: "2026-02-28", method: "人工交配" }, { id: "m17", date: "2026-03-02", method: "人工交配" }, { id: "m18", date: "2026-03-04", method: "人工交配" }],
+    fatherName: "プリンス", status: "妊娠中",
+    birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+
+  { id: "c_sae_1", dogId: "sae", heatDate: "2025-10-04",
+    matings: [{ id: "m19", date: "2025-10-11", method: "自然交配" }, { id: "m20", date: "2025-10-16", method: "自然交配" }],
+    fatherName: "エース", status: "出産済",
+    birthDate: "2025-12-21", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 5, malePups: 1, femalePups: 4, stillborn: 1, note: "" },
+  { id: "c_sae_2", dogId: "sae", heatDate: "2026-04-21",
+    matings: [{ id: "m21", date: "2026-04-28", method: "自然交配" }],
+    fatherName: "ノンタン", status: "交配中",
+    birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" },
+
+  { id: "c_nacchan_1", dogId: "nacchan", heatDate: "2025-10-31",
+    matings: [{ id: "m22", date: "2025-11-07", method: "自然交配" }],
+    fatherName: "アク", status: "出産済",
+    birthDate: "2026-01-11", birthMethod: "自然分娩", pregnancyDays: 62, totalPups: 7, malePups: 2, femalePups: 5, stillborn: 0, note: "初産" },
+
+  { id: "c_yomogi_1", dogId: "yomogi", heatDate: "2026-02-12",
+    matings: [{ id: "m23", date: "2026-02-15", method: "人工交配" }],
+    fatherName: "プリンス", status: "出産済",
+    birthDate: "2026-04-25", birthMethod: "自然分娩", pregnancyDays: 61, totalPups: 9, malePups: 1, femalePups: 1, stillborn: null, note: "" },
+
+  { id: "c_alexa_1", dogId: "alexa", heatDate: "2026-01-30",
+    matings: [{ id: "m24", date: "2026-02-05", method: "人工交配" }],
+    fatherName: "コルレオーネ", status: "出産済",
+    birthDate: "2026-04-09", birthMethod: "帝王切開", pregnancyDays: 63, totalPups: 9, malePups: 3, femalePups: 6, stillborn: 0, note: "" },
 ];
 
 const PUPPIES_DATA = [
-  { id: "p_au1", birthId: "r_au_birth", no: 1, gender: "オス", color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au2", birthId: "r_au_birth", no: 2, gender: "メス", color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au3", birthId: "r_au_birth", no: 3, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
-  { id: "p_au4", birthId: "r_au_birth", no: 4, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au1", birthId: "c_uri_2", no: 1, gender: "オス", color: "BLACK & WHITE",  eyeColor: "", identifier: "赤リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au2", birthId: "c_uri_2", no: 2, gender: "メス", color: "BLACK & WHITE",  eyeColor: "", identifier: "青リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au3", birthId: "c_uri_2", no: 3, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "黄リボン", birthWeight: "", name: "", chip: "", note: "" },
+  { id: "p_au4", birthId: "c_uri_2", no: 4, gender: "メス", color: "SILVER & WHITE", eyeColor: "", identifier: "緑リボン", birthWeight: "", name: "", chip: "", note: "" },
 ];
 
 // ============================================================
@@ -102,35 +140,46 @@ const INITIAL_SALES = [
 // ============================================================
 const todayStr = () => new Date().toISOString().slice(0, 10);
 const formatDate = (d) => d ? String(d).replace(/-/g, "/") : "－";
+const formatMD = (d) => { if (!d) return "－"; const parts = String(d).split("-"); return `${parseInt(parts[1])}/${parseInt(parts[2])}`; };
 const getAge = (b) => {
   if (!b) return "";
   const diff = (new Date() - new Date(b)) / (1000 * 60 * 60 * 24 * 30.5);
   if (diff < 12) return `${Math.floor(diff)}ヶ月`;
   return `${Math.floor(diff / 12)}歳${Math.floor(diff % 12) > 0 ? Math.floor(diff % 12) + "ヶ月" : ""}`;
 };
-const nextHeatEst = (d) => { if (!d) return null; const dt = new Date(d); dt.setDate(dt.getDate() + 180); return dt.toISOString().slice(0, 10); };
 const daysDiff = (a, b = todayStr()) => !a ? null : Math.round((new Date(b) - new Date(a)) / 86400000);
+const addDays = (dateStr, days) => { const d = new Date(dateStr); d.setDate(d.getDate() + days); return d.toISOString().slice(0, 10); };
 
 const STATUS_COLOR = {
+  "ヒートのみ": { bg: "rgba(212,120,158,0.15)", text: "#d4789e", border: "rgba(212,120,158,0.4)" },
   "交配中": { bg: "rgba(91,143,201,0.15)",  text: "#5b8fc9", border: "rgba(91,143,201,0.4)" },
   "妊娠中": { bg: "rgba(201,168,76,0.15)",  text: "#c9a84c", border: "rgba(201,168,76,0.4)" },
   "出産済": { bg: "rgba(80,180,120,0.15)",  text: "#50b478", border: "rgba(80,180,120,0.4)" },
-  "不成立": { bg: "rgba(180,80,80,0.15)",   text: "#c96060", border: "rgba(180,80,80,0.4)" },
+  "非受胎": { bg: "rgba(180,80,80,0.15)",   text: "#c96060", border: "rgba(180,80,80,0.4)" },
 };
 
-function groupHeatRecords(records) {
-  const result = []; const seen = new Set();
-  records.forEach(r => {
-    if (r.type !== "breeding") { result.push(r); return; }
-    if (!seen.has(r.group)) {
-      seen.add(r.group);
-      result.push({ ...r, _groupRecs: records.filter(x => x.group === r.group && x.type === "breeding") });
-    }
-  });
-  return result.sort((a, b) => b.date.localeCompare(a.date));
-}
-
 function isNonEmptyArray(arr) { return Array.isArray(arr) && arr.length > 0; }
+
+// その子の過去のヒート間隔から次回予測を計算（データが少なければ180日で仮予測）
+function predictNextHeat(dogCycles) {
+  const heatDates = dogCycles.filter(c => c.heatDate).map(c => c.heatDate).sort();
+  if (heatDates.length === 0) return null;
+  const lastHeat = heatDates[heatDates.length - 1];
+  let avgDays = 180;
+  let isEstimate = true;
+  if (heatDates.length >= 2) {
+    const diffs = [];
+    for (let i = 1; i < heatDates.length; i++) {
+      diffs.push(daysDiff(heatDates[i - 1], heatDates[i]));
+    }
+    avgDays = Math.round(diffs.reduce((a, b) => a + b, 0) / diffs.length);
+    isEstimate = false;
+  }
+  const center = addDays(lastHeat, avgDays);
+  const rangeStart = addDays(center, -7);
+  const rangeEnd = addDays(center, 7);
+  return { lastHeat, avgDays, rangeStart, rangeEnd, isEstimate };
+}
 
 // ============================================================
 // STYLES
@@ -221,30 +270,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .dog-hdr-stats{display:flex;gap:18px;margin-top:9px}
 .dhs-num{font-size:17px;font-weight:900;font-family:'DM Mono',monospace}
 .dhs-lbl{font-size:10px;color:var(--text3);margin-top:1px}
-.next-heat{margin:11px 20px 0;background:var(--pink-dim);border:1px solid rgba(212,120,158,0.25);border-radius:var(--r);padding:11px 15px;display:flex;align-items:center;justify-content:space-between}
-.nh-label{font-size:11px;color:var(--pink);font-weight:700;margin-bottom:2px}
-.nh-date{font-size:14px;font-weight:700;font-family:'DM Mono',monospace}
-.timeline{padding:13px 20px;padding-bottom:110px}
-.tl-year{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:0.08em;margin:13px 0 8px}
-.tl-item{display:flex;gap:10px;margin-bottom:2px}
-.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:28px}
-.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;border:2px solid}
-.tl-dot.heat{background:var(--pink-dim);border-color:rgba(212,120,158,0.4)}
-.tl-dot.breeding{background:var(--gold-dim);border-color:rgba(201,168,76,0.4)}
-.tl-dot.birth{background:var(--green-dim);border-color:rgba(80,180,120,0.4)}
-.tl-vline{width:2px;background:var(--border);flex:1;min-height:10px;margin-top:3px}
-.tl-content{flex:1;padding-bottom:11px}
-.tl-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 12px}
-.tl-card.heat-card{border-left:3px solid var(--pink)}
-.tl-card.breeding-card{border-left:3px solid var(--gold)}
-.tl-card.birth-card{border-left:3px solid var(--green)}
-.tl-date{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);margin-bottom:2px}
-.tl-type{font-size:13px;font-weight:700}
-.tl-detail{font-size:11px;color:var(--text2);margin-top:2px}
-.tl-note{font-size:10px;color:var(--text3);margin-top:3px;font-style:italic}
-.status-badge{display:inline-flex;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid;margin-top:4px}
-.birth-summary{margin-top:6px;padding:7px 10px;background:var(--green-dim);border-radius:6px;border:1px solid rgba(80,180,120,0.2);cursor:pointer}
-.birth-num{font-size:20px;font-weight:900;font-family:'DM Mono',monospace;color:var(--green)}
+.next-heat{margin:11px 20px 0;background:var(--pink-dim);border:1px solid rgba(212,120,158,0.25);border-radius:var(--r);padding:11px 15px}
+.nh-label{font-size:11px;color:var(--pink);font-weight:700;margin-bottom:4px}
+.nh-range{font-size:16px;font-weight:700;font-family:'DM Mono',monospace}
+.nh-sub{font-size:10px;color:var(--text3);margin-top:4px}
+.cycle-list{padding:14px 20px;padding-bottom:110px;display:flex;flex-direction:column;gap:12px}
+.cycle-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.cycle-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.cycle-heat{font-size:11px;color:var(--pink);font-weight:700}
+.cycle-body{padding:12px 16px}
+.mating-line{font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);line-height:1.7}
+.mating-detail{font-size:11px;color:var(--text3);margin-top:3px}
+.status-badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid;margin-top:8px}
+.birth-summary{margin-top:8px;padding:9px 12px;background:var(--green-dim);border-radius:8px;border:1px solid rgba(80,180,120,0.2);cursor:pointer}
+.birth-num{font-size:22px;font-weight:900;font-family:'DM Mono',monospace;color:var(--green)}
 .birth-detail{font-size:11px;color:var(--text2);margin-top:2px}
 .pup-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
 .pup-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 10px;cursor:pointer;text-align:center}
@@ -255,6 +294,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .pup-chip-color{font-size:9px;color:var(--text3);margin-top:2px}
 .pup-chip-id{font-size:9px;color:var(--gold);margin-top:2px}
 .add-pup-btn{width:100%;padding:9px;border-radius:var(--r-sm);border:1px dashed var(--border2);background:none;font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--text3);cursor:pointer;margin-top:7px}
+.cycle-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.cycle-act-btn{padding:7px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:var(--text2)}
 .fab-wrap{position:fixed;bottom:26px;right:22px;display:flex;flex-direction:column;gap:9px;align-items:flex-end;z-index:150}
 .fab{width:54px;height:54px;border-radius:15px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,168,76,0.35);font-size:22px}
 .fab-sub{padding:9px 15px;border-radius:11px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.3);white-space:nowrap}
@@ -279,7 +320,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
 .stat-num{font-size:20px;font-weight:900;font-family:'DM Mono',monospace}
 .egg-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
-.sync-btn{width:100%;padding:13px;border-radius:var(--r);border:1px solid rgba(201,168,76,0.4);background:var(--gold-dim);color:var(--gold);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.sync-btn{width:100%;padding:13px;border-radius:var(--r);border:1px solid rgba(201,168,76,0.4);background:var(--gold-dim);color:var(--gold);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
 .sync-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:5px}
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:12px}
 .loading-spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
@@ -573,31 +614,130 @@ function PuppyEditModal({ pup, onClose, onSave }) {
 }
 
 // ============================================================
-// HEAT SCREEN
+// CYCLE CARD（ヒート→交配→結果をまとめた1枚）
 // ============================================================
-function HeatScreen({ dogs, heatRecords, setHeatRecords, puppies, setPuppies, onBack, initialDog }) {
+function CycleCard({ cycle, puppies, setPuppies, onUpdate, onAddMating, onSetStatus, onRecordBirth }) {
+  const [expanded, setExpanded] = useState(false);
+  const [editPup, setEditPup] = useState(null);
+  const sc = STATUS_COLOR[cycle.status] || STATUS_COLOR["ヒートのみ"];
+  const birthPups = puppies.filter(p => p.birthId === cycle.id);
+  const firstMating = cycle.matings[0]?.date;
+  const canAddMating = cycle.status === "ヒートのみ" || cycle.status === "交配中";
+  const canRecordBirth = cycle.status === "妊娠中" || cycle.status === "交配中";
+
+  return (
+    <div className="cycle-card">
+      <div className="cycle-hdr">
+        <div>
+          {cycle.heatDate && <div className="cycle-heat">🌸 ヒート {formatDate(cycle.heatDate)}</div>}
+          {cycle.fatherName && <div style={{ fontSize: 14, fontWeight: 700, marginTop: 4 }}>💞 × {cycle.fatherName}</div>}
+        </div>
+        <span className="status-badge" style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}>{cycle.status}</span>
+      </div>
+      <div className="cycle-body">
+        {cycle.matings.length > 0 && (
+          <div>
+            <div className="mating-line">
+              {cycle.matings.map((m, i) => {
+                const prev = i > 0 ? cycle.matings[i-1].date : null;
+                return (prev && m.date.slice(0,7)===prev.slice(0,7)) ? m.date.slice(8) : formatDate(m.date);
+              }).join("、")}
+            </div>
+            <div className="mating-detail">計{cycle.matings.length}回 · {[...new Set(cycle.matings.map(m => m.method))].join("・")}</div>
+          </div>
+        )}
+
+        {(cycle.status === "妊娠中" || cycle.status === "交配中") && firstMating && (
+          <div style={{ marginTop: 8, fontSize: 11, color: "var(--text3)" }}>
+            出産予定: {formatDate(addDays(firstMating, 60))} 〜 {formatDate(addDays(firstMating, 63))}
+          </div>
+        )}
+
+        {cycle.status === "出産済" && (
+          <div className="birth-summary" onClick={() => setExpanded(e => !e)}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                <span style={{ fontSize: 11, color: "var(--text3)" }}>{formatDate(cycle.birthDate)}</span>
+                {cycle.totalPups != null && <><span className="birth-num">{cycle.totalPups}</span><span style={{ fontSize: 12, color: "var(--text2)" }}>頭</span></>}
+              </div>
+              {cycle.totalPups != null && <span style={{ fontSize: 11, color: "var(--green)" }}>{expanded ? "▲ 閉じる" : "▼ 仔犬を見る"}</span>}
+            </div>
+            {cycle.totalPups != null && (
+              <div className="birth-detail">
+                {cycle.birthMethod}{cycle.pregnancyDays ? ` · 妊娠${cycle.pregnancyDays}日` : ""} · ♂{cycle.malePups} ♀{cycle.femalePups}{cycle.stillborn > 0 ? ` · 死産${cycle.stillborn}` : ""}
+              </div>
+            )}
+          </div>
+        )}
+
+        {expanded && cycle.status === "出産済" && (
+          <div>
+            {birthPups.length > 0 ? (
+              <div className="pup-grid">
+                {birthPups.map(p => (
+                  <div key={p.id} className={`pup-chip ${p.gender==="オス"?"pm":"pf"}`} onClick={() => setEditPup(p)}>
+                    <div className="pup-chip-no">#{p.no}</div>
+                    <div className="pup-chip-gender" style={{color:p.gender==="オス"?"var(--blue)":"var(--pink)"}}>{p.gender==="オス"?"♂":"♀"} {p.gender}</div>
+                    <div className="pup-chip-color">{p.color||"未入力"}</div>
+                    {p.identifier && <div className="pup-chip-id">{p.identifier}</div>}
+                  </div>
+                ))}
+              </div>
+            ) : <div style={{ fontSize: 11, color: "var(--text3)", textAlign: "center", padding: "10px 0" }}>仔犬情報未登録</div>}
+            <button className="add-pup-btn" onClick={() => {
+              const np = { id: `p_${Date.now()}`, birthId: cycle.id, no: birthPups.length + 1, gender: "メス", color: "", eyeColor: "", identifier: "", birthWeight: "", name: "", chip: "", note: "" };
+              setPuppies(ps => [...ps, np]); setEditPup(np);
+            }}>＋ 仔犬を追加</button>
+          </div>
+        )}
+
+        {cycle.note && <div style={{ fontSize: 11, color: "var(--text3)", marginTop: 6, fontStyle: "italic" }}>{cycle.note}</div>}
+
+        <div className="cycle-actions">
+          {canAddMating && <button className="cycle-act-btn" onClick={() => onAddMating(cycle)}>＋ 交配を追加</button>}
+          {cycle.status !== "出産済" && cycle.status !== "非受胎" && <button className="cycle-act-btn" onClick={() => onSetStatus(cycle)}>ステータス変更</button>}
+          {canRecordBirth && <button className="cycle-act-btn" onClick={() => onRecordBirth(cycle)}>🐶 出産を記録</button>}
+        </div>
+      </div>
+      {editPup && <PuppyEditModal pup={editPup} onClose={() => setEditPup(null)} onSave={updated => { setPuppies(ps => ps.map(p => p.id===updated.id?updated:p)); setEditPup(null); }} />}
+    </div>
+  );
+}
+
+// ============================================================
+// HEAT SCREEN（サイクル方式）
+// ============================================================
+function HeatScreen({ dogs, cycles, setCycles, puppies, setPuppies, onBack, initialDog }) {
   const femaleDogs = dogs.filter(d => d.gender === "メス");
   const [selDog, setSelDog] = useState(initialDog || femaleDogs[0]);
   const [fabOpen, setFabOpen] = useState(false);
   const [modal, setModal] = useState(null);
+  const [activeCycle, setActiveCycle] = useState(null);
   const [form, setForm] = useState({});
-  const [expanded, setExpanded] = useState({});
-  const [editPup, setEditPup] = useState(null);
   const sf = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const allMales = dogs.filter(d => d.gender === "オス").map(d => d.callName);
+  const dogCycles = cycles.filter(c => c.dogId === selDog?.id).sort((a, b) => {
+    const da = a.heatDate || a.matings[0]?.date || "";
+    const db = b.heatDate || b.matings[0]?.date || "";
+    return db.localeCompare(da);
+  });
 
-  const dogRecs = heatRecords.filter(r => r.dogId === selDog?.id);
-  const heatOnly = dogRecs.filter(r => r.type === "heat").sort((a,b) => b.date.localeCompare(a.date));
-  const lastHeat = heatOnly[0];
-  const nextHeat = nextHeatEst(lastHeat?.date);
-  const daysToNext = nextHeat ? daysDiff(todayStr(), nextHeat) : null;
-  const breedingCount = [...new Set(dogRecs.filter(r=>r.type==="breeding").map(r=>r.group))].length;
-  const birthCount = dogRecs.filter(r=>r.type==="birth").length;
+  const prediction = predictNextHeat(dogCycles);
+  const heatCount = dogCycles.filter(c => c.heatDate).length;
+  const matingCount = dogCycles.filter(c => c.matings.length > 0).length;
+  const birthCount = dogCycles.filter(c => c.status === "出産済").length;
 
-  const grouped = groupHeatRecords(dogRecs);
-  const byYear = grouped.reduce((acc, r) => { const y = r.date.slice(0,4); if (!acc[y]) acc[y]=[]; acc[y].push(r); return acc; }, {});
-  const years = Object.keys(byYear).sort((a,b) => b-a);
+  const byYear = dogCycles.reduce((acc, c) => {
+    const d = c.heatDate || c.matings[0]?.date || "不明";
+    const y = d.slice(0, 4);
+    if (!acc[y]) acc[y] = [];
+    acc[y].push(c);
+    return acc;
+  }, {});
+  const years = Object.keys(byYear).sort((a, b) => b.localeCompare(a));
+
+  const updateCycle = (updated) => setCycles(cs => cs.map(c => c.id === updated.id ? updated : c));
 
   return (
     <div className="app">
@@ -612,119 +752,67 @@ function HeatScreen({ dogs, heatRecords, setHeatRecords, puppies, setPuppies, on
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
             <div><div className="dog-hdr-name">{selDog.callName}</div><div style={{fontSize:11,color:"var(--text3)",marginTop:2}}>{selDog.breed}</div></div>
             <div className="dog-hdr-stats">
-              <div><div className="dhs-num" style={{color:"var(--pink)"}}>{heatOnly.length}</div><div className="dhs-lbl">ヒート</div></div>
-              <div><div className="dhs-num" style={{color:"var(--gold)"}}>{breedingCount}</div><div className="dhs-lbl">交配</div></div>
+              <div><div className="dhs-num" style={{color:"var(--pink)"}}>{heatCount}</div><div className="dhs-lbl">ヒート</div></div>
+              <div><div className="dhs-num" style={{color:"var(--gold)"}}>{matingCount}</div><div className="dhs-lbl">交配</div></div>
               <div><div className="dhs-num" style={{color:"var(--green)"}}>{birthCount}</div><div className="dhs-lbl">出産</div></div>
             </div>
           </div>
         </div>
-        {nextHeat && (
+
+        {prediction && (
           <div className="next-heat">
-            <div><div className="nh-label">🌸 次回ヒート予測（約6ヶ月後）</div><div className="nh-date">{formatDate(nextHeat)}</div></div>
-            <div style={{textAlign:"right"}}>
-              {daysToNext !== null && (daysToNext > 0
-                ? <div style={{fontSize:12}}>あと <strong style={{color:"var(--pink)",fontSize:15}}>{daysToNext}</strong> 日</div>
-                : <div style={{color:"var(--pink)",fontWeight:700}}>ヒート時期！</div>
-              )}
-              <div style={{fontSize:9,color:"var(--text3)",marginTop:2}}>前回: {formatDate(lastHeat?.date)}</div>
-            </div>
+            <div className="nh-label">🌸 次回ヒート予測{prediction.isEstimate ? "（仮・平均6ヶ月）" : "（この子の平均間隔）"}</div>
+            <div className="nh-range">{formatMD(prediction.rangeStart)} 〜 {formatMD(prediction.rangeEnd)} 頃</div>
+            <div className="nh-sub">前回: {formatDate(prediction.lastHeat)}{!prediction.isEstimate ? ` ・ 平均${prediction.avgDays}日周期` : ""}</div>
           </div>
         )}
-        <div className="timeline">
-          {grouped.length === 0 && <div className="empty">記録がありません</div>}
-          {years.map((year, yi) => (
+
+        <div className="cycle-list">
+          {dogCycles.length === 0 && <div className="empty">記録がありません</div>}
+          {years.map(year => (
             <div key={year}>
-              <div className="tl-year">{year}年</div>
-              {byYear[year].map((r, i) => {
-                const isLast = i === byYear[year].length-1 && yi === years.length-1;
-                const sc = r.status ? (STATUS_COLOR[r.status]||STATUS_COLOR["交配中"]) : null;
-                const birthPups = puppies.filter(p => p.birthId === r.id);
-                const isExp = expanded[r.id];
-                return (
-                  <div key={r.id} className="tl-item">
-                    <div className="tl-line">
-                      <div className={`tl-dot ${r.type}`}>{r.type==="heat"?"🌸":r.type==="birth"?"🐶":"💞"}</div>
-                      {!isLast && <div className="tl-vline"/>}
-                    </div>
-                    <div className="tl-content">
-                      {r.type === "heat" && (
-                        <div className="tl-card heat-card"><div className="tl-date">{formatDate(r.date)}</div><div className="tl-type">🌸 ヒート開始</div>{r.note && <div className="tl-note">{r.note}</div>}</div>
-                      )}
-                      {r.type === "breeding" && (
-                        <div className="tl-card breeding-card">
-                          <div className="tl-type">💞 交配（× {r.fatherName}）</div>
-                          <div style={{fontFamily:"DM Mono,monospace",fontSize:11,color:"var(--text2)",margin:"4px 0 2px",lineHeight:1.7}}>
-                            {r._groupRecs ? r._groupRecs.map((x,i) => {
-                              const prev = i > 0 ? r._groupRecs[i-1].date : null;
-                              return (prev && x.date.slice(0,7)===prev.slice(0,7)) ? x.date.slice(8) : formatDate(x.date);
-                            }).join("、") : formatDate(r.date)}
-                          </div>
-                          <div className="tl-detail">計{r._groupRecs?r._groupRecs.length:1}回 · {r._groupRecs?[...new Set(r._groupRecs.map(x=>x.method))].join("・"):r.method}</div>
-                          {sc && <span className="status-badge" style={{background:sc.bg,color:sc.text,borderColor:sc.border}}>{r.status}</span>}
-                          {r.note && <div className="tl-note">{r.note}</div>}
-                        </div>
-                      )}
-                      {r.type === "birth" && (
-                        <div className="tl-card birth-card">
-                          <div className="tl-date">{formatDate(r.date)}</div>
-                          <div className="tl-type">🐶 出産（× {r.fatherName}）</div>
-                          <div className="tl-detail">{r.birthMethod}{r.pregnancyDays?` · 妊娠${r.pregnancyDays}日`:""}</div>
-                          {r.totalPups != null && (
-                            <div className="birth-summary" onClick={() => setExpanded(e => ({...e,[r.id]:!e[r.id]}))}>
-                              <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between"}}>
-                                <div style={{display:"flex",alignItems:"baseline",gap:5}}><span className="birth-num">{r.totalPups}</span><span style={{fontSize:12,color:"var(--text2)"}}>頭</span></div>
-                                <span style={{fontSize:11,color:"var(--green)"}}>{isExp?"▲ 閉じる":"▼ 仔犬を見る"}</span>
-                              </div>
-                              <div className="birth-detail">♂ オス {r.malePups}頭　♀ メス {r.femalePups}頭{r.stillborn>0?`　死産 ${r.stillborn}頭`:""}</div>
-                            </div>
-                          )}
-                          {isExp && (
-                            <div>
-                              {birthPups.length > 0 ? (
-                                <div className="pup-grid">
-                                  {birthPups.map(p => (
-                                    <div key={p.id} className={`pup-chip ${p.gender==="オス"?"pm":"pf"}`} onClick={() => setEditPup(p)}>
-                                      <div className="pup-chip-no">#{p.no}</div>
-                                      <div className="pup-chip-gender" style={{color:p.gender==="オス"?"var(--blue)":"var(--pink)"}}>{p.gender==="オス"?"♂":"♀"} {p.gender}</div>
-                                      <div className="pup-chip-color">{p.color||"未入力"}</div>
-                                      {p.identifier && <div className="pup-chip-id">{p.identifier}</div>}
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : <div style={{fontSize:11,color:"var(--text3)",textAlign:"center",padding:"10px 0"}}>仔犬情報未登録</div>}
-                              <button className="add-pup-btn" onClick={() => {
-                                const np = {id:`p_${Date.now()}`,birthId:r.id,no:birthPups.length+1,gender:"メス",color:"",eyeColor:"",identifier:"",birthWeight:"",name:"",chip:"",note:""};
-                                setPuppies(ps => [...ps, np]); setEditPup(np);
-                              }}>＋ 仔犬を追加</button>
-                            </div>
-                          )}
-                          {r.note && <div className="tl-note">{r.note}</div>}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text3)", marginBottom: 4 }}>{year}年</div>
+              {byYear[year].map(cycle => (
+                <div key={cycle.id} style={{ marginBottom: 10 }}>
+                  <CycleCard
+                    cycle={cycle}
+                    puppies={puppies}
+                    setPuppies={setPuppies}
+                    onAddMating={(c) => { setActiveCycle(c); setForm({ date: todayStr(), method: "自然交配", fatherName: c.fatherName || "" }); setModal("addMating"); }}
+                    onSetStatus={(c) => { setActiveCycle(c); setForm({ status: c.status }); setModal("setStatus"); }}
+                    onRecordBirth={(c) => { setActiveCycle(c); setForm({ birthDate: todayStr(), birthMethod: "自然分娩" }); setModal("recordBirth"); }}
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </div>
       </>}
+
       <div className="fab-wrap">
         {fabOpen && <>
-          <button className="fab-sub breeding" onClick={() => { setForm({date:todayStr(),method:"自然交配"}); setModal("breeding"); setFabOpen(false); }}>💞 交配を記録</button>
-          <button className="fab-sub heat" onClick={() => { setForm({date:todayStr()}); setModal("heat"); setFabOpen(false); }}>🌸 ヒートを記録</button>
+          <button className="fab-sub breeding" onClick={() => { setForm({ date: todayStr(), method: "自然交配", fatherName: "" }); setModal("newCycleMating"); setFabOpen(false); }}>💞 交配を記録（新規）</button>
+          <button className="fab-sub heat" onClick={() => { setForm({ date: todayStr() }); setModal("newHeat"); setFabOpen(false); }}>🌸 ヒートを記録</button>
         </>}
         <button className="fab" onClick={() => setFabOpen(o => !o)}>{fabOpen?"✕":"＋"}</button>
       </div>
-      {modal === "heat" && (
+
+      {/* 新しいヒート記録（実際に確認できた日） */}
+      {modal === "newHeat" && (
         <Modal title={`🌸 ヒートを記録 — ${selDog?.callName}`} onClose={() => setModal(null)}>
-          <div className="field"><label>ヒート開始日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
+          <div className="field"><label>ヒート確認日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
           <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
-          <button className="btn-save pink" onClick={() => { if (!form.date) return; setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:"heat",date:form.date,note:form.note||""}]); setModal(null); }}>記録する</button>
+          <button className="btn-save pink" onClick={() => {
+            if (!form.date) return;
+            setCycles(cs => [...cs, { id: `c_${Date.now()}`, dogId: selDog.id, heatDate: form.date, matings: [], fatherName: null, status: "ヒートのみ", birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: form.note || "" }]);
+            setModal(null);
+          }}>記録する</button>
         </Modal>
       )}
-      {modal === "breeding" && (
-        <Modal title={`💞 交配を記録 — ${selDog?.callName}`} onClose={() => setModal(null)}>
+
+      {/* 新しいサイクルとして交配を記録 */}
+      {modal === "newCycleMating" && (
+        <Modal title={`💞 新しい交配を記録 — ${selDog?.callName}`} onClose={() => setModal(null)}>
           <div className="field"><label>父犬</label>
             <select value={form.fatherName||""} onChange={e => sf("fatherName",e.target.value)}>
               <option value="">選択してください</option>
@@ -737,16 +825,77 @@ function HeatScreen({ dogs, heatRecords, setHeatRecords, puppies, setPuppies, on
             <div className="field"><label>交配日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
             <div className="field"><label>交配方法</label><select value={form.method||"自然交配"} onChange={e => sf("method",e.target.value)}><option>自然交配</option><option>人工交配</option></select></div>
           </div>
-          <div className="field"><label>メモ</label><textarea value={form.note||""} onChange={e => sf("note",e.target.value)} /></div>
           <button className="btn-save" onClick={() => {
             const fn = form.fatherName==="__manual__"?(form.fatherNameManual||"外部犬"):form.fatherName;
             if (!fn||!form.date) return;
-            setHeatRecords(rs => [...rs,{id:`r${Date.now()}`,dogId:selDog.id,type:"breeding",date:form.date,fatherName:fn,method:form.method||"自然交配",status:"交配中",group:`g_${Date.now()}`,note:form.note||""}]);
+            setCycles(cs => [...cs, { id: `c_${Date.now()}`, dogId: selDog.id, heatDate: null, matings: [{ id: `m_${Date.now()}`, date: form.date, method: form.method }], fatherName: fn, status: "交配中", birthDate: null, birthMethod: null, pregnancyDays: null, totalPups: null, malePups: null, femalePups: null, stillborn: null, note: "" }]);
             setModal(null); setFabOpen(false);
           }}>記録する</button>
         </Modal>
       )}
-      {editPup && <PuppyEditModal pup={editPup} onClose={() => setEditPup(null)} onSave={updated => { setPuppies(ps => ps.map(p => p.id===updated.id?updated:p)); setEditPup(null); }} />}
+
+      {/* 既存サイクルに交配を追加 */}
+      {modal === "addMating" && activeCycle && (
+        <Modal title={`＋ 交配を追加 — ${selDog?.callName}`} onClose={() => setModal(null)}>
+          {!activeCycle.fatherName && (
+            <div className="field"><label>父犬</label>
+              <select value={form.fatherName||""} onChange={e => sf("fatherName",e.target.value)}>
+                <option value="">選択してください</option>
+                {allMales.map(m => <option key={m} value={m}>{m}</option>)}
+                <option value="__manual__">外部犬（手入力）</option>
+              </select>
+            </div>
+          )}
+          {form.fatherName === "__manual__" && <div className="field"><label>父犬の名前</label><input value={form.fatherNameManual||""} onChange={e => sf("fatherNameManual",e.target.value)} /></div>}
+          <div className="field-row">
+            <div className="field"><label>交配日</label><input type="date" value={form.date||""} onChange={e => sf("date",e.target.value)} /></div>
+            <div className="field"><label>交配方法</label><select value={form.method||"自然交配"} onChange={e => sf("method",e.target.value)}><option>自然交配</option><option>人工交配</option></select></div>
+          </div>
+          <button className="btn-save" onClick={() => {
+            if (!form.date) return;
+            const fn = activeCycle.fatherName || (form.fatherName === "__manual__" ? (form.fatherNameManual || "外部犬") : form.fatherName);
+            if (!fn) return;
+            const newMating = { id: `m_${Date.now()}`, date: form.date, method: form.method || "自然交配" };
+            updateCycle({ ...activeCycle, fatherName: fn, matings: [...activeCycle.matings, newMating], status: activeCycle.status === "ヒートのみ" ? "交配中" : activeCycle.status });
+            setModal(null);
+          }}>追加する</button>
+        </Modal>
+      )}
+
+      {/* ステータス変更 */}
+      {modal === "setStatus" && activeCycle && (
+        <Modal title="ステータス変更" onClose={() => setModal(null)}>
+          <div className="field"><label>ステータス</label>
+            <select value={form.status||""} onChange={e => sf("status",e.target.value)}>
+              <option>ヒートのみ</option><option>交配中</option><option>妊娠中</option><option>非受胎</option>
+            </select>
+          </div>
+          <button className="btn-save" onClick={() => { updateCycle({ ...activeCycle, status: form.status }); setModal(null); }}>変更する</button>
+        </Modal>
+      )}
+
+      {/* 出産を記録 */}
+      {modal === "recordBirth" && activeCycle && (
+        <Modal title="🐶 出産を記録" onClose={() => setModal(null)}>
+          <div className="field"><label>出産日</label><input type="date" value={form.birthDate||""} onChange={e => sf("birthDate",e.target.value)} /></div>
+          <div className="field"><label>出産方法</label><select value={form.birthMethod||"自然分娩"} onChange={e => sf("birthMethod",e.target.value)}><option>自然分娩</option><option>帝王切開</option></select></div>
+          <div className="field-row">
+            <div className="field"><label>総頭数</label><input type="number" value={form.totalPups||""} onChange={e => sf("totalPups",parseInt(e.target.value)||0)} /></div>
+            <div className="field"><label>死産数</label><input type="number" value={form.stillborn||""} onChange={e => sf("stillborn",parseInt(e.target.value)||0)} /></div>
+          </div>
+          <div className="field-row">
+            <div className="field"><label>オス頭数</label><input type="number" value={form.malePups||""} onChange={e => sf("malePups",parseInt(e.target.value)||0)} /></div>
+            <div className="field"><label>メス頭数</label><input type="number" value={form.femalePups||""} onChange={e => sf("femalePups",parseInt(e.target.value)||0)} /></div>
+          </div>
+          <button className="btn-save" onClick={() => {
+            if (!form.birthDate) return;
+            const firstMating = activeCycle.matings[0]?.date;
+            const pregDays = firstMating ? daysDiff(firstMating, form.birthDate) : null;
+            updateCycle({ ...activeCycle, status: "出産済", birthDate: form.birthDate, birthMethod: form.birthMethod || "自然分娩", pregnancyDays: pregDays, totalPups: form.totalPups || 0, malePups: form.malePups || 0, femalePups: form.femalePups || 0, stillborn: form.stillborn || 0 });
+            setModal(null);
+          }}>記録する</button>
+        </Modal>
+      )}
     </div>
   );
 }
@@ -754,13 +903,13 @@ function HeatScreen({ dogs, heatRecords, setHeatRecords, puppies, setPuppies, on
 // ============================================================
 // DOG MODULE MENU
 // ============================================================
-function DogModule({ dogs, setDogs, heatRecords, setHeatRecords, puppies, setPuppies, onBack }) {
+function DogModule({ dogs, setDogs, cycles, setCycles, puppies, setPuppies, onBack }) {
   const [screen, setScreen] = useState(null);
   const [heatInitDog, setHeatInitDog] = useState(null);
   const goHeat = (dog) => { setHeatInitDog(dog); setScreen("heat"); };
 
   if (screen === "list") return <DogListScreen dogs={dogs} setDogs={setDogs} onBack={() => setScreen(null)} onGoHeat={goHeat} />;
-  if (screen === "heat") return <HeatScreen dogs={dogs} heatRecords={heatRecords} setHeatRecords={setHeatRecords} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen(null)} initialDog={heatInitDog} />;
+  if (screen === "heat") return <HeatScreen dogs={dogs} cycles={cycles} setCycles={setCycles} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen(null)} initialDog={heatInitDog} />;
 
   return (
     <div className="app">
@@ -773,7 +922,7 @@ function DogModule({ dogs, setDogs, heatRecords, setHeatRecords, puppies, setPup
         </div>
         <div className="menu-item" onClick={() => { setHeatInitDog(null); setScreen("heat"); }}>
           <div className="menu-item-icon" style={{background:"var(--pink-dim)"}}>🌸</div>
-          <div><div className="menu-item-name">ヒート・交配・出産</div><div className="menu-item-desc">ヒート管理・交配記録・仔犬詳細</div></div>
+          <div><div className="menu-item-name">ヒート・交配・出産</div><div className="menu-item-desc">サイクル単位で管理・予測は平均間隔から自動計算</div></div>
           <span style={{color:"var(--text3)",fontSize:18,marginLeft:"auto"}}>›</span>
         </div>
       </div>
@@ -782,7 +931,7 @@ function DogModule({ dogs, setDogs, heatRecords, setHeatRecords, puppies, setPup
 }
 
 // ============================================================
-// CHICKEN MODULE (state lifted to App level via props)
+// CHICKEN MODULE
 // ============================================================
 function ChickenModule({
   flocks, setFlocks, products, setProducts, eggs, setEggs,
@@ -1042,11 +1191,11 @@ function ChickenModule({
 }
 
 // ============================================================
-// HOME (with auto-load + Google Sheets sync)
+// HOME (auto-load + Google Sheets sync)
 // ============================================================
 export default function App() {
   const [dogs, setDogs] = useState(INITIAL_DOGS);
-  const [heatRecords, setHeatRecords] = useState(HEAT_RECORDS_DATA);
+  const [cycles, setCycles] = useState(CYCLES_DATA);
   const [puppies, setPuppies] = useState(PUPPIES_DATA);
   const [flocks, setFlocks] = useState(INITIAL_FLOCKS);
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
@@ -1064,9 +1213,22 @@ export default function App() {
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}`;
 
+  // JSON文字列で保存された配列項目（matingsなど）を元の配列に戻す
+  const parseCyclesFromSheet = (rawCycles) => {
+    return rawCycles.map(c => ({
+      ...c,
+      matings: (() => { try { return typeof c.matings === "string" ? JSON.parse(c.matings) : (c.matings || []); } catch { return []; } })(),
+      totalPups: c.totalPups === "" || c.totalPups == null ? null : Number(c.totalPups),
+      malePups: c.malePups === "" || c.malePups == null ? null : Number(c.malePups),
+      femalePups: c.femalePups === "" || c.femalePups == null ? null : Number(c.femalePups),
+      stillborn: c.stillborn === "" || c.stillborn == null ? null : Number(c.stillborn),
+      pregnancyDays: c.pregnancyDays === "" || c.pregnancyDays == null ? null : Number(c.pregnancyDays),
+    }));
+  };
+
   const applyLoadedData = (data) => {
     if (isNonEmptyArray(data.dogs)) setDogs(data.dogs);
-    if (isNonEmptyArray(data.heatRecords)) setHeatRecords(data.heatRecords);
+    if (isNonEmptyArray(data.cycles)) setCycles(parseCyclesFromSheet(data.cycles));
     if (isNonEmptyArray(data.puppies)) setPuppies(data.puppies);
     if (isNonEmptyArray(data.flocks)) setFlocks(data.flocks);
     if (isNonEmptyArray(data.products)) setProducts(data.products);
@@ -1077,16 +1239,13 @@ export default function App() {
     if (isNonEmptyArray(data.sales)) setSales(data.sales);
   };
 
-  // アプリを開いた瞬間に自動でスプレッドシートから読み込む
   useEffect(() => {
     (async () => {
       try {
         const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "loadAll" }) });
         const data = await res.json();
         if (data.success) applyLoadedData(data);
-      } catch (err) {
-        // 読み込み失敗時は初期データのまま表示する
-      }
+      } catch (err) { /* 初期データのまま */ }
       setInitializing(false);
     })();
   }, []);
@@ -1094,13 +1253,11 @@ export default function App() {
   const saveToSheets = async () => {
     setSyncStatus("saving");
     try {
-      const payload = { dogs, heatRecords, puppies, flocks, products, eggs, hatches, purchases, customers, sales };
+      const payload = { dogs, cycles, puppies, flocks, products, eggs, hatches, purchases, customers, sales };
       const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "saveAll", payload }) });
       const data = await res.json();
       setSyncStatus(data.success ? "saved" : "error");
-    } catch (err) {
-      setSyncStatus("error");
-    }
+    } catch (err) { setSyncStatus("error"); }
     setTimeout(() => setSyncStatus(null), 3000);
   };
 
@@ -1111,9 +1268,7 @@ export default function App() {
       const data = await res.json();
       if (data.success) { applyLoadedData(data); setLoadStatus("loaded"); }
       else setLoadStatus("error");
-    } catch (err) {
-      setLoadStatus("error");
-    }
+    } catch (err) { setLoadStatus("error"); }
     setTimeout(() => setLoadStatus(null), 3000);
   };
 
@@ -1132,7 +1287,7 @@ export default function App() {
     );
   }
 
-  if (screen === "dogs") return <><style>{S}</style><DogModule dogs={dogs} setDogs={setDogs} heatRecords={heatRecords} setHeatRecords={setHeatRecords} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen("home")} /></>;
+  if (screen === "dogs") return <><style>{S}</style><DogModule dogs={dogs} setDogs={setDogs} cycles={cycles} setCycles={setCycles} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen("home")} /></>;
   if (screen === "chickens") return <><style>{S}</style><ChickenModule
       flocks={flocks} setFlocks={setFlocks}
       products={products} setProducts={setProducts}
