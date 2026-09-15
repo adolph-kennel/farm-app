@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbx6HgpIAsNOMtI0aeSyxYaXyNgpXaeZcWCVm8RLkNcncMjq_6KIR5Dabkihan_ZzoL0/exec";
 
 // ============================================================
-// DOG DATA
+// DOG DATA (初期値 — スプレッドシートに保存があればそちらを優先)
 // ============================================================
 const INITIAL_DOGS = [
   { id: "uri",     callName: "ウリ",      pedigreeName: "ADOLPH JP KALI",                      jkc: "HU-01349/23",   chip: "",              gender: "メス", birthdate: "2023-05-20", color: "BLACK & WHITE",  breed: "ハスキー",  fatherId: "zeus",   motherId: "kaoru",  note: "" },
@@ -129,6 +129,8 @@ function groupHeatRecords(records) {
   });
   return result.sort((a, b) => b.date.localeCompare(a.date));
 }
+
+function isNonEmptyArray(arr) { return Array.isArray(arr) && arr.length > 0; }
 
 // ============================================================
 // STYLES
@@ -279,6 +281,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .egg-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
 .sync-btn{width:100%;padding:13px;border-radius:var(--r);border:1px solid rgba(201,168,76,0.4);background:var(--gold-dim);color:var(--gold);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
 .sync-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:5px}
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:12px}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 `;
 
 // ============================================================
@@ -777,19 +782,16 @@ function DogModule({ dogs, setDogs, heatRecords, setHeatRecords, puppies, setPup
 }
 
 // ============================================================
-// CHICKEN MODULE
+// CHICKEN MODULE (state lifted to App level via props)
 // ============================================================
-function ChickenModule({ onBack }) {
-  const [flocks, setFlocks]       = useState(INITIAL_FLOCKS);
-  const [products, setProducts]   = useState(INITIAL_PRODUCTS);
-  const [eggs, setEggs]           = useState(INITIAL_EGGS);
-  const [hatches, setHatches]     = useState(INITIAL_HATCH);
-  const [purchases, setPurchases] = useState(INITIAL_PURCHASES);
-  const [customers, setCustomers] = useState(INITIAL_CUSTOMERS);
-  const [sales, setSales]         = useState(INITIAL_SALES);
-  const [tab, setTab]             = useState("flock");
-  const [modal, setModal]         = useState(null);
-  const [form, setForm]           = useState({});
+function ChickenModule({
+  flocks, setFlocks, products, setProducts, eggs, setEggs,
+  hatches, setHatches, purchases, setPurchases, customers, setCustomers,
+  sales, setSales, onBack
+}) {
+  const [tab, setTab] = useState("flock");
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({});
   const sf = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const totalBirds = flocks.reduce((s, f) => s + f.male + f.female, 0);
@@ -1040,24 +1042,59 @@ function ChickenModule({ onBack }) {
 }
 
 // ============================================================
-// HOME (with Google Sheets sync)
+// HOME (with auto-load + Google Sheets sync)
 // ============================================================
 export default function App() {
   const [dogs, setDogs] = useState(INITIAL_DOGS);
   const [heatRecords, setHeatRecords] = useState(HEAT_RECORDS_DATA);
   const [puppies, setPuppies] = useState(PUPPIES_DATA);
-  const [flocksState, setFlocksState] = useState(INITIAL_FLOCKS);
+  const [flocks, setFlocks] = useState(INITIAL_FLOCKS);
+  const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [eggs, setEggs] = useState(INITIAL_EGGS);
+  const [hatches, setHatches] = useState(INITIAL_HATCH);
+  const [purchases, setPurchases] = useState(INITIAL_PURCHASES);
+  const [customers, setCustomers] = useState(INITIAL_CUSTOMERS);
+  const [sales, setSales] = useState(INITIAL_SALES);
+
   const [screen, setScreen] = useState("home");
   const [syncStatus, setSyncStatus] = useState(null);
+  const [initializing, setInitializing] = useState(true);
   const [loadStatus, setLoadStatus] = useState(null);
 
   const now = new Date();
   const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,"0")}/${String(now.getDate()).padStart(2,"0")}`;
 
+  const applyLoadedData = (data) => {
+    if (isNonEmptyArray(data.dogs)) setDogs(data.dogs);
+    if (isNonEmptyArray(data.heatRecords)) setHeatRecords(data.heatRecords);
+    if (isNonEmptyArray(data.puppies)) setPuppies(data.puppies);
+    if (isNonEmptyArray(data.flocks)) setFlocks(data.flocks);
+    if (isNonEmptyArray(data.products)) setProducts(data.products);
+    if (isNonEmptyArray(data.eggs)) setEggs(data.eggs);
+    if (isNonEmptyArray(data.hatches)) setHatches(data.hatches);
+    if (isNonEmptyArray(data.purchases)) setPurchases(data.purchases);
+    if (isNonEmptyArray(data.customers)) setCustomers(data.customers);
+    if (isNonEmptyArray(data.sales)) setSales(data.sales);
+  };
+
+  // アプリを開いた瞬間に自動でスプレッドシートから読み込む
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "loadAll" }) });
+        const data = await res.json();
+        if (data.success) applyLoadedData(data);
+      } catch (err) {
+        // 読み込み失敗時は初期データのまま表示する
+      }
+      setInitializing(false);
+    })();
+  }, []);
+
   const saveToSheets = async () => {
     setSyncStatus("saving");
     try {
-      const payload = { dogs, heatRecords, puppies, flocks: flocksState };
+      const payload = { dogs, heatRecords, puppies, flocks, products, eggs, hatches, purchases, customers, sales };
       const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "saveAll", payload }) });
       const data = await res.json();
       setSyncStatus(data.success ? "saved" : "error");
@@ -1072,13 +1109,8 @@ export default function App() {
     try {
       const res = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: "loadAll" }) });
       const data = await res.json();
-      if (data.success) {
-        if (data.dogs && data.dogs.length) setDogs(data.dogs);
-        if (data.heatRecords && data.heatRecords.length) setHeatRecords(data.heatRecords);
-        if (data.puppies && data.puppies.length) setPuppies(data.puppies);
-        if (data.flocks && data.flocks.length) setFlocksState(data.flocks);
-        setLoadStatus("loaded");
-      } else setLoadStatus("error");
+      if (data.success) { applyLoadedData(data); setLoadStatus("loaded"); }
+      else setLoadStatus("error");
     } catch (err) {
       setLoadStatus("error");
     }
@@ -1088,8 +1120,28 @@ export default function App() {
   const syncLabel = { saving: "⏳ 保存中...", saved: "✅ 保存完了！", error: "❌ エラー" };
   const loadLabel = { loading: "⏳ 読み込み中...", loaded: "✅ 読み込み完了！", error: "❌ エラー" };
 
+  if (initializing) {
+    return (
+      <div className="app">
+        <style>{S}</style>
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <div style={{ color: "var(--text3)", fontSize: 13 }}>読み込み中...</div>
+        </div>
+      </div>
+    );
+  }
+
   if (screen === "dogs") return <><style>{S}</style><DogModule dogs={dogs} setDogs={setDogs} heatRecords={heatRecords} setHeatRecords={setHeatRecords} puppies={puppies} setPuppies={setPuppies} onBack={() => setScreen("home")} /></>;
-  if (screen === "chickens") return <><style>{S}</style><ChickenModule onBack={() => setScreen("home")} /></>;
+  if (screen === "chickens") return <><style>{S}</style><ChickenModule
+      flocks={flocks} setFlocks={setFlocks}
+      products={products} setProducts={setProducts}
+      eggs={eggs} setEggs={setEggs}
+      hatches={hatches} setHatches={setHatches}
+      purchases={purchases} setPurchases={setPurchases}
+      customers={customers} setCustomers={setCustomers}
+      sales={sales} setSales={setSales}
+      onBack={() => setScreen("home")} /></>;
 
   return (
     <div className="app">
@@ -1118,7 +1170,7 @@ export default function App() {
         <button className="sync-btn" onClick={loadFromSheets} disabled={loadStatus==="loading"} style={{marginTop:4}}>
           {loadStatus ? loadLabel[loadStatus] : "📥 スプレッドシートから読み込む"}
         </button>
-        <div className="sync-hint">前回保存したデータを読み込みます</div>
+        <div className="sync-hint">前回保存したデータを読み込みます（アプリを開いた時も自動で読み込みます）</div>
       </div>
     </div>
   );
